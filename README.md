@@ -1,1 +1,1 @@
-ReTrade repo. Main project directory is located at packages>retrade>lib
+ReTrade repo. Main project directory is located at **packages**>**retrade**>**lib**
