@@ -1,0 +1,70 @@
+/*.mod-enter, .mod-appear{
+  width:0;
+  height:0;
+  background: white;
+  opacity: 0;
+  animation: popOut 0.6s linear
+}
+
+.mod-leave{
+  opacity: 1;
+  animation: shrink 0.6s linear
+}
+
+.mod-appear{
+  opacity:0;
+  animation: popOut 0.6 linear
+}*/
+
+.fadeIn-enter {
+  opacity: 0;
+  transition: 0.3s ease-in-out all;
+}
+
+.fadeIn-enter.fadeIn-enter-active {
+  opacity: 1;
+}
+
+
+@keyframes popOut {
+  0% {
+    opacity: 1;
+    height:0;
+    width:0;
+  }
+
+  25% {
+    height: 450px;
+    width: 370px;
+  }
+
+  50% {
+    height:375px;
+    width:295px;
+  }
+
+  75% {
+    height:415px;
+    width:335px;
+  }
+
+  100% {
+    opacity: 1;
+    height:400px;
+    width:320px;
+  }
+}
+
+@keyframes shrink {
+  0% {
+    opacity:0;
+    height:300px;
+    width:300px;
+  }
+
+  100% {
+    opacity:0;
+    height:0;
+    width:0;
+  }
+}
