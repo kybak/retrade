@@ -1,10 +1,6 @@
 import React from 'react';
 import styled from 'styled-components'
-import { borderRadius } from '../../stylesheets/style.utils.js';
-import { boxShadow } from '../../stylesheets/style.utils.js';
-import { transition } from '../../stylesheets/style.utils.js';
-import { boxSizing } from '../../stylesheets/style.utils.js';
-import { fontSmoothing } from '../../stylesheets/style.utils.js';
+import { borderRadius, boxShadow, transition, boxSizing, fontSmoothing } from '../../stylesheets/style.utils.js';
 
 
 const FlipContainer = styled.div`

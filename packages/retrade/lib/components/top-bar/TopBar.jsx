@@ -42,7 +42,7 @@ export default class TopBar extends React.Component {
                     <Link to={`/cart`}>Cart</Link>
                 </NavItem>
                 <NavItem>
-                    <Link to={`/search`}>Search</Link>
+                    <Link to={`/`}>Search</Link>
                 </NavItem>
                 <NavItem>
                     <a href="">Add</a>

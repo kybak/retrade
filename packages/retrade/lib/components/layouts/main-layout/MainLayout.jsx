@@ -1,8 +1,6 @@
 import React from 'react'
 import theme from './theme.js'
 import styled, {ThemeProvider} from 'styled-components'
-// import Modal from './Modal.jsx'
-// import '../../../stylesheets/global.css'
 
 const Main = styled.div`
    width: 100vw;

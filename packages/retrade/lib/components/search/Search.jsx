@@ -1,11 +1,9 @@
 import React from 'react';
-import SearchResult from '../../search-results/SearchResult.jsx'
-import TopBar from '../../top-bar/TopBar.jsx'
+import SearchResult from '../search-results/SearchResult.jsx'
+import TopBar from '../top-bar/TopBar.jsx'
 import SearchForm from './SearchForm.jsx'
 import styled from 'styled-components'
-import { borderRadius } from '../../../stylesheets/style.utils.js';
-import { boxShadow } from '../../../stylesheets/style.utils.js';
-import { transition } from '../../../stylesheets/style.utils.js';
+import { borderRadius, boxShadow, transition } from '../../stylesheets/style.utils.js';
 
 
 
@@ -138,7 +136,6 @@ export default class Search extends React.Component {
                     </div>
 
                 </SearchSection>
-                {/*<div className="slice2"></div>*/}
 
 
                 <SearchResults className="flex-column justify-center align-center">

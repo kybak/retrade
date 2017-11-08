@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components'
-import {borderRadius} from '../../../stylesheets/style.utils.js';
-import {boxShadow} from '../../../stylesheets/style.utils.js';
-import {transform} from '../../../stylesheets/style.utils.js';
+import { borderRadius, boxShadow, transform } from '../../stylesheets/style.utils.js';
 
 const Go = styled.button`
   width: 50px;
@@ -89,7 +87,7 @@ export default class SearchForm extends React.Component {
                         <i className="fa fa-search" aria-hidden="true"></i>
                     </IconContainer>
 
-                    <Input placeholder="Search by component (eg. HOLDER SZ-2591 29MM)"/>
+                    <Input style={{paddingLeft: "50px"}} placeholder="Search by component (eg. HOLDER SZ-2591 29MM)"/>
 
                     <Go className="flex-column align-center justify-center"
                         type="submit"
