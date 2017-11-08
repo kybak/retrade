@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components'
+import { Quantity } from '../presentational-components/inputs/Quantity.js'
+import { Price} from '../presentational-components/Price.js'
 import { borderRadius, boxShadow, transition, boxSizing, fontSmoothing } from '../../stylesheets/style.utils.js';
 
 
@@ -45,15 +47,7 @@ const Back = ResultBox.extend`
   transform: rotateY(180deg);
 `;
 
-const Price = styled.div`
-  border-left: thin solid lightgray;
-  font-size:20px;
-  height:100%;
-  padding:0 10px;
-  padding-left: 20px;
-  justify-content:center;
-  align-items: center;
-`;
+
 
 const AddRemove = styled.div`
   position: absolute;
@@ -102,23 +96,6 @@ const Added = styled.div.attrs({
   ${transition("all", ".25s")}
 `;
 
-const Quantity = styled.input`
-   width:60px;
-   height: 33px;
-   text-align: center;
-   padding:5px;
-   border: 1px solid #bbb;
-   border-top-color: #999;
-   ${boxSizing("border-box")}
-   ${borderRadius("5px")}
-   ${boxShadow("inset", "0", "1px", "2px", "rgba(0, 0, 0, .18)")}
-   ${fontSmoothing("antialiased")}
-   &:focus {
-     outline: none;
-     border-color: ${props => props.theme.highlight};
-     ${boxShadow("0", "0", "5px", "0px", "#BAD7FF")}
-   }
-`;
 
 const AddButton = styled.button`
   padding:10px;

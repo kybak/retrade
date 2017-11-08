@@ -11,6 +11,7 @@ export default class ComponentTemplate extends React.Component {
 
     render() {
         return (
+            <div></div>
         )
     }
 }

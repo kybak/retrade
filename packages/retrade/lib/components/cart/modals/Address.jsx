@@ -1,6 +1,6 @@
 import React from 'react';
 import { ModalContainer } from '../../layouts/modal/ModalLayout.js'
-import ButtonPrimary from '../../buttons/ButtonPrimary.jsx'
+import { ButtonPrimary } from '../../presentational-components/buttons/ButtonPrimary.js'
 import styled, { keyframes } from 'styled-components'
 import { borderRadius, boxShadow, animationFillMode } from '../../../stylesheets/style.utils.js';
 
@@ -87,7 +87,7 @@ export default class AddressModal extends React.Component {
             <input placeholder="Country"/>
             <input placeholder="City"/>
 
-            <ButtonPrimary name="FINALIZE ORDER"/>
+            <ButtonPrimary>FINALIZE ORDER</ButtonPrimary>
           </AddressForm>
         </div>
       )

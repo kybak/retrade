@@ -2,19 +2,21 @@ import React from 'react';
 import styled from 'styled-components'
 import TopBar from '../top-bar/TopBar.jsx'
 import AddressModal from './modals/Address.jsx'
-import {borderRadius, boxShadow, transition} from '../../stylesheets/style.utils.js';
-import ButtonPrimary from "../buttons/ButtonPrimary";
+import { borderRadius, boxShadow, transition, boxSizing, fontSmoothing } from '../../stylesheets/style.utils.js';
+import { ButtonPrimary } from "../presentational-components/buttons/ButtonPrimary";
+import { Quantity } from '../presentational-components/inputs/Quantity.js'
+import { Price } from '../presentational-components/Price.js'
 
 const Banner = styled.div`
     width:100%;
-    height: 180px;
+    height: 70px;
     background: ${props => props.theme.primaryBackground};
     align-items: center;
     z-index: 0;
-    padding-top: 40px;
-    ${transition("all", ".5s")};
-    
+    padding-top: 15px;
+    ${transition("all", ".5s")};    
 `;
+
 
 const CartContainer = styled.div`
     margin-top:40px;
@@ -23,8 +25,8 @@ const CartContainer = styled.div`
 const CartItemBox = styled.div`
       position: relative;
       margin-bottom:20px;
-      height:37px;
-      width:400px;
+      height:90px;
+      width:460px;
       background: #f5f3ed;
       justify-content:space-between;
       align-items: center;
@@ -39,7 +41,7 @@ export default class Cart extends React.Component {
     constructor(props) {
         super(props);
 
-        // this.handleClick = this.handleClick.bind(this);
+        this.handleClick = this.handleClick.bind(this);
 
         this.state = {
             modalOpen: false
@@ -49,7 +51,6 @@ export default class Cart extends React.Component {
 
     handleClick(e) {
         e.preventDefault();
-        console.log('hey');
 
         this.setState({modalOpen: true})
     }
@@ -57,13 +58,12 @@ export default class Cart extends React.Component {
     render() {
 
         return (
-            <div className="cart flex-column container">
+            <div className="flex-column align-center">
 
                 <TopBar/>
 
                 <Banner className="flex-column">
                     <h1>CART</h1>
-                    <h1><span>RE</span>TRADE</h1>
                 </Banner>
 
 
@@ -72,12 +72,12 @@ export default class Cart extends React.Component {
                     <CartItemBox className="flex-row">
                         <div className="flex-column">
                             <b>DI SCHOTTKY MBRS340 FCS</b>
-                            <input value="100"/>
+                            <Quantity value="100"/>
                         </div>
 
-                        <div className="flex-column price">
+                        <Price className="flex-column">
                             <span>100 NKr</span>
-                        </div>
+                        </Price>
 
                         <div className="flex-column remove">
                             <i className="fa fa-trash" aria-hidden="true"></i>
@@ -87,12 +87,12 @@ export default class Cart extends React.Component {
                     <CartItemBox className="flex-row">
                         <div className="flex-column">
                             <b>DI SCHOTTKY MBRS340 FCS</b>
-                            <input value="100"/>
+                            <Quantity value="100"/>
                         </div>
 
-                        <div className="flex-column price">
+                        <Price className="flex-column">
                             <span>100 NKr</span>
-                        </div>
+                        </Price>
 
                         <div className="flex-column remove">
                             <i className="fa fa-trash" aria-hidden="true"></i>
@@ -102,12 +102,12 @@ export default class Cart extends React.Component {
                     <CartItemBox className="flex-row">
                         <div className="flex-column">
                             <b>DI SCHOTTKY MBRS340 FCS</b>
-                            <input value="100"/>
+                            <Quantity value="100"/>
                         </div>
 
-                        <div className="flex-column price">
+                        <Price className="flex-column">
                             <span>100 NKr</span>
-                        </div>
+                        </Price>
 
                         <div className="flex-column remove">
                             <i className="fa fa-trash" aria-hidden="true"></i>
@@ -127,7 +127,7 @@ export default class Cart extends React.Component {
                     <b>Total</b>
                     <span>300 000 NKr</span>
 
-                    <ButtonPrimary onClick={e=>this.handleClick(e)} name="CHECKOUT" />
+                    <ButtonPrimary onClick={this.handleClick}>CHECKOUT</ButtonPrimary>
 
                 </div>
 
