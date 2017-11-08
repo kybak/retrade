@@ -22,7 +22,7 @@ Package.onUse(function (api) {
 
   // api.addFiles('lib/stylesheets/bootstrap.min.css');
   api.use('fourseven:scss');
-  api.addFiles('lib/stylesheets/static.scss');
+  api.addFiles('lib/stylesheets/global.scss');
 
   api.mainModule('lib/server/main.js', 'server');
   api.mainModule('lib/client/main.js', 'client');
