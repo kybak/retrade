@@ -65,12 +65,5 @@ export default class TopBar extends React.Component {
     }
 }
 
-/*
- App.propTypes = {
- connected: React.PropTypes.bool,
- loading: React.PropTypes.bool,
- likes: React.PropTypes.number,
- friends: React.PropTypes.number
- };*/
 
 

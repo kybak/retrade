@@ -11,35 +11,11 @@ export default class Login extends React.Component {
         // this.state = {showWhat: 'friends'}
     }
 
-    /*   getLikes() {
-     const {
-     likes,
-     loading
-     } = this.props;
 
-     return loading ? 'Loading' : likes
-     }
-
-     getFriends() {
-     const {
-     friends,
-     loading
-     } = this.props;
-
-     return loading ? 'Loading' : friends
-     }*/
-    /*
-     handleClick() {
-     const showWhat = this.state.showWhat;
-     showWhat == 'friends' ? this.setState({showWhat: 'likes'}) : this.setState({showWhat: 'friends'})
-     }*/
 
     render() {
-        // let showWhat = this.state.showWhat;
         const {connected} = this.props;
-        /*getHeader = ()=> {
-         return showWhat == 'likes' ? <h1>Likes: {this.getLikes()}</h1> : <h1>Friends: {this.getFriends()}</h1>
-         }*/
+
 
         return (
             <div className="login flex-column container">

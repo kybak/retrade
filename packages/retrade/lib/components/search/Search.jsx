@@ -72,23 +72,6 @@ export default class Search extends React.Component {
         };
     }
 
-    /*   getLikes() {
-     const {
-     likes,
-     loading
-     } = this.props;
-
-     return loading ? 'Loading' : likes
-     }
-
-     getFriends() {
-     const {
-     friends,
-     loading
-     } = this.props;
-
-     return loading ? 'Loading' : friends
-     }*/
     go(e) {
         e.preventDefault();
         this.setState({top: "-100px"});
@@ -115,12 +98,6 @@ export default class Search extends React.Component {
 
     render() {
         const showResults = this.state.showResults;
-        // let showWhat = this.state.showWhat;
-        const {connected} = this.props;
-        /*getHeader = ()=> {
-         return showWhat == 'likes' ? <h1>Likes: {this.getLikes()}</h1> : <h1>Friends: {this.getFriends()}</h1>
-         }*/
-
 
         return (
             <div className="flex-column full-height">
@@ -148,10 +125,3 @@ export default class Search extends React.Component {
     }
 }
 
-/*
- App.propTypes = {
- connected: React.PropTypes.bool,
- loading: React.PropTypes.bool,
- likes: React.PropTypes.number,
- friends: React.PropTypes.number
- };*/

@@ -14,7 +14,6 @@ const MainLayout = props => {
             <ThemeProvider theme={theme}>
                 {props.children}
             </ThemeProvider>
-            {/*<Modal></Modal>*/}
         </Main>
 
     );
