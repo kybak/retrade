@@ -58,6 +58,7 @@ export default class Search extends React.Component {
         super(props);
 
         this.go = this.go.bind(this);
+
         this.state = {
             showResults: false,
             top: "0px"

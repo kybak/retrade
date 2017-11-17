@@ -4,6 +4,8 @@ import {boxShadow, borderRadius, transition} from '../../stylesheets/style.utils
 import Header from '../common/layouts/header/Header.jsx'
 import Footer from '../common/layouts/footer/Footer.js'
 import {ButtonPrimary} from '../common/presentational-components/buttons/ButtonPrimary.js'
+import AlertContainer from 'react-alert'
+
 
 const Banner = styled.div`
   background-image: url('/packages/retrade_core/lib/static/Electronics.png');
@@ -42,29 +44,40 @@ const Filter = styled.div`
   z-index: -2;
 `;
 
-const SignupContainer = styled.div`
-  height: 500px;
-  width: 400px;
-  padding: 22px;
-  background: white;
-  position: absolute;
-  left: 50%;
-  top:50%;
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  -o-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  ${boxShadow("1px", "1px", "10px", "0", "rgba(0, 0, 0, 0.38)")}
+const SignupContainer = styled.div.attrs({
+    $top: props => props.top,
+    $display: props => props.display
+})`
+    top: ${props => props.$top};
+    display: ${props => props.$display};    
+    height: 500px;
+    width: 400px;
+    padding: 22px;
+    background: white;
+    position: absolute;
+    left: 50%;
+    flex-direction: column;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    ${boxShadow("1px", "1px", "10px", "0", "rgba(0, 0, 0, 0.38)")}
+    ${transition("all", ".5s")};
+    
+    
+    img {
+      margin-top: 20px;
+    }
+    
+    b {
+      text-align: center;
+      margin-top: 20px;
+    }
+  `;
 
-  img {
-    margin-top: 20px;
-  }
 
-  b {
-    text-align: center;
-    margin-top: 20px;
-  }
+const ForgotPasswordContainer = SignupContainer.extend`
 `;
 
 const AuthForm = styled.form`
@@ -110,53 +123,123 @@ const Input = styled.input`
     padding-left: 50px
 `;
 
+const ForgotPasswordLink = styled.span`
+    text-decoration: underline;
+    cursor: pointer;
+    color: #0295aa;
+`;
+
 
 export default class Login extends React.Component {
 
     constructor(props) {
         super(props);
 
-        // this.handleClick = this.handleClick.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.forgotPassword = this.forgotPassword.bind(this);
+        this.backToLogin = this.backToLogin.bind(this);
+        this.reset = this.reset.bind(this);
+
         this.state = {
             email: '',
             password: '',
+            topL: '50%',
+            topF: '50%',
+            hideLogin: "flex",
+            hideForgot: "none",
         }
+    }
+
+    forgotPassword() {
+        document.getElementsByTagName('body')[0].style.overflow = "hidden";
+        this.setState({topF: "50%"});
+        this.setState({topL: "150%"});
+
+        setTimeout(()=> {
+            this.setState({hideLogin: "none"});
+            this.setState({hideForgot: "flex"});
+
+            document.getElementsByTagName('body')[0].style.overflow = "auto";
+        }, 500)
+    }
+
+    backToLogin() {
+        document.getElementsByTagName('body')[0].style.overflow = "hidden";
+        this.setState({topL: "50%"});
+        this.setState({topF: "150%"});
+
+        setTimeout(()=> {
+            this.setState({hideLogin: "flex"});
+            this.setState({hideForgot: "none"});
+
+            document.getElementsByTagName('body')[0].style.overflow = "auto";
+        }, 500)
+    }
+
+    reset() {
+        this.setState({email: '', password: ''});
+        document.getElementById("auth-form").reset();
     }
 
     handleSubmit(ev) {
         ev.preventDefault();
+
+        Meteor.loginWithPassword(this.state.email, this.state.password, (err, res)=> {
+            if (!err) {
+                this.msg.success('Login successful. ID is: ' + Meteor.userId(), {
+                    time: 30000,
+                    type: 'success',
+                });
+
+                this.reset();
+            } else {
+                this.msg.error(err.message, {
+                    time: 30000,
+                    type: 'error',
+                });
+            }
+        });
     }
 
+    /*componentDidMount() {
+        this.setState({top: "50%"})
+    }*/
 
     render() {
 
         return (
             <div className="flex-column">
+                <AlertContainer ref={a => this.msg = a} />
+
                 <Header/>
                 <Filter/>
                 <Banner className="flex-row">
                     <h1>LOGIN</h1>
                 </Banner>
 
-                <SignupContainer className="flex-column">
+                <SignupContainer top={this.state.topL} display={this.state.hideLogin}>
                     <img src="/packages/retrade_core/lib/static/login.svg" height="60"/>
                     <b>Login below to search for products.</b>
 
-                    <AuthForm onSubmit={this.handleSubmit} className="flex-column">
+                    <AuthForm id="auth-form" onSubmit={this.handleSubmit} className="flex-column">
                         <div className="flex-column align-center justify-center full-width">
 
                             <div className="relative flex-row align-center justify-center">
                                 <IconContainer className="flex-row">
                                     <i className="fa fa-envelope" aria-hidden="true"></i>
                                 </IconContainer>
-                                <Input placeholder="Email"/>
+                                <Input type="email" placeholder="Email" required="true" onChange={e=>this.setState({email: e.target.value})} />
                             </div>
 
                             <div className="relative flex-row align-center justify-center">
                                 <IconContainer className="flex-row">
                                     <i className="fa fa-lock" aria-hidden="true"></i>
                                 </IconContainer>
-                                <Input placeholder="Password"/>
+                                <Input type="password" placeholder="Password" required="true" onChange={e=>this.setState({password: e.target.value})}/>
+                            </div>
+
+                            <div style={{width: "325px"}} className="flex-row justify-end">
+                                <ForgotPasswordLink onClick={this.forgotPassword}>Forgot password?</ForgotPasswordLink>
                             </div>
                         </div>
 
@@ -165,6 +248,32 @@ export default class Login extends React.Component {
 
                     </AuthForm>
                 </SignupContainer>
+
+                <ForgotPasswordContainer top={this.state.topF} display={this.state.hideForgot}>
+                    <img src="/packages/retrade_core/lib/static/login.svg" height="60"/>
+                    <b>Enter your email to reset your password.</b>
+
+                    <AuthForm id="forgot-form" className="flex-column">
+                        <div className="flex-column align-center justify-center full-width">
+
+                            <div className="relative flex-row align-center justify-center">
+                                <IconContainer className="flex-row">
+                                    <i className="fa fa-envelope" aria-hidden="true"></i>
+                                </IconContainer>
+                                <Input type="email" placeholder="Email" required="true" onChange={e=>this.setState({email: e.target.value})} />
+                            </div>
+
+
+                            <div style={{width: "325px"}} className="flex-row justify-end">
+                                <ForgotPasswordLink onClick={this.backToLogin}>Back to login</ForgotPasswordLink>
+                            </div>
+                        </div>
+
+
+                        <ButtonPrimary type="submit">RESET</ButtonPrimary>
+
+                    </AuthForm>
+                </ForgotPasswordContainer>
 
                 <Footer/>
             </div>
