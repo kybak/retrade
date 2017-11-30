@@ -10,9 +10,11 @@ const Main = styled.div`
 
 const MainLayout = props => {
     return (
-        <Main>
+        <Main className="flex-column">
             <ThemeProvider theme={theme}>
+
                 {props.children}
+
             </ThemeProvider>
         </Main>
 

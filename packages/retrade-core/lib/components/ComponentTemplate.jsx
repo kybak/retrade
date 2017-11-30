@@ -11,7 +11,9 @@ export default class ComponentTemplate extends React.Component {
 
     render() {
         return (
-            <div></div>
+            <div className="flex-column">
+
+            </div>
         )
     }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components'
 import AlertContainer from 'react-alert'
-import TopBar from '../common/layouts/header/Header.jsx'
+import Header from '../common/layouts/header/Header.jsx'
 import AddressModal from './modals/Address.jsx'
 import { borderRadius, boxShadow, transition, boxSizing, fontSmoothing } from '../../stylesheets/style.utils.js';
 import { ButtonPrimary } from "../common/presentational-components/buttons/ButtonPrimary";
@@ -81,7 +81,7 @@ export default class Cart extends React.Component {
             <div className="flex-column align-center">
                 <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
 
-                <TopBar/>
+                <Header/>
 
                 <Banner className="flex-column">
                     <h1>CART</h1>

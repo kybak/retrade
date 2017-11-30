@@ -4,6 +4,7 @@ import {boxShadow, borderRadius, transition} from '../../stylesheets/style.utils
 import Header from '../common/layouts/header/Header.jsx'
 import Footer from '../common/layouts/footer/Footer.js'
 import {ButtonPrimary} from '../common/presentational-components/buttons/ButtonPrimary.js'
+import {TextInput} from '../common/presentational-components/inputs/TextInput.js'
 import AlertContainer from 'react-alert'
 
 
@@ -228,14 +229,14 @@ export default class Login extends React.Component {
                                 <IconContainer className="flex-row">
                                     <i className="fa fa-envelope" aria-hidden="true"></i>
                                 </IconContainer>
-                                <Input type="email" placeholder="Email" required="true" onChange={e=>this.setState({email: e.target.value})} />
+                                <TextInput auth type="email" placeholder="Email" required="true" onChange={e=>this.setState({email: e.target.value})} />
                             </div>
 
                             <div className="relative flex-row align-center justify-center">
                                 <IconContainer className="flex-row">
                                     <i className="fa fa-lock" aria-hidden="true"></i>
                                 </IconContainer>
-                                <Input type="password" placeholder="Password" required="true" onChange={e=>this.setState({password: e.target.value})}/>
+                                <TextInput auth type="password" placeholder="Password" required="true" onChange={e=>this.setState({password: e.target.value})}/>
                             </div>
 
                             <div style={{width: "325px"}} className="flex-row justify-end">
@@ -260,7 +261,7 @@ export default class Login extends React.Component {
                                 <IconContainer className="flex-row">
                                     <i className="fa fa-envelope" aria-hidden="true"></i>
                                 </IconContainer>
-                                <Input type="email" placeholder="Email" required="true" onChange={e=>this.setState({email: e.target.value})} />
+                                <TextInput auth type="email" placeholder="Email" required="true" onChange={e=>this.setState({email: e.target.value})} />
                             </div>
 
 

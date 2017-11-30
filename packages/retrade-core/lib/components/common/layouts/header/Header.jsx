@@ -4,8 +4,8 @@ import styled from 'styled-components'
 import Menu, { MenuItem } from 'material-ui/Menu';
 import Button from 'material-ui/Button';
 
+
 const Bar = styled.div`
-    background: transparent;
     position: absolute;
     top: 0;
     left:0;
@@ -99,7 +99,7 @@ export default class TopBar extends React.Component {
                     >
                         <MenuItemHeader><b>Norautron</b></MenuItemHeader>
                         <MenuItem onClick={this.closeMenu}>Orders</MenuItem>
-                        <MenuItem onClick={this.closeMenu}>My account</MenuItem>
+                        <Link to={`/account`}><MenuItem onClick={this.closeMenu}>My account</MenuItem></Link>
                         <MenuItem onClick={this.closeMenu}>Logout</MenuItem>
                     </Menu>
                 </NavItem>
