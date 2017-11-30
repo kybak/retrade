@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components'
 import Header from '../common/layouts/header/Header.jsx'
 import Profile from '../account/Profile.jsx'
+import PartList from '../account/PartList.jsx'
 
 
 const AccountContainer = styled.div`
-    padding:40px;
     background: #F5F5F5;
     width: 100%;
     flex-grow: 1;
@@ -23,29 +23,32 @@ const Banner = styled.div`
 
 export default class Acccount extends React.Component {
 
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-  }
+    }
 
 
-  render() {
-    return (
-      <div className="flex-column align-center justify-center flex-grow">
+    render() {
+        return (
+            <div className="flex-column align-center justify-center flex-grow">
 
-        <Header/>
+                <Header/>
 
-        <Banner/>
+                <Banner/>
 
-        <AccountContainer className="flex-column justify-center align-center">
-          <div>
-            <Profile/>
+                <AccountContainer className="flex-column justify-center align-center">
+                    <div className="flex-row">
 
-          </div>
+                        <Profile/>
 
-        </AccountContainer>
+                        <PartList/>
 
-      </div>
-    )
-  }
+                    </div>
+
+                </AccountContainer>
+
+            </div>
+        )
+    }
 }
