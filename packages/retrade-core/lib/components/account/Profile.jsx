@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components'
-import {borderRadius, boxShadow} from '../../stylesheets/style.utils.js';
+import {borderRadius, boxShadow, transition} from '../../stylesheets/style.utils.js';
 import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button';
 import Switch from 'material-ui/Switch';
@@ -9,11 +9,16 @@ import Tooltip from 'material-ui/Tooltip';
 const ProfileContainer = styled.div`
   background: white;
   width: 500px;
-  height: 500px;
+  min-height: 700px;
   padding: 30px;
    margin: 20px;
   ${boxShadow("1px", "1px", "10px", "0", "rgba(0, 0, 0, 0.36)")};
   ${borderRadius("5px")};
+  ${transition("all", ".25s")};
+`;
+
+const Unverified = styled.span`
+    color: orangered
 `;
 
 
@@ -25,6 +30,7 @@ export default class Profile extends React.Component {
         this.state = {
             notEditing: true,
             sameAsBilling: false,
+            passwordReset: false,
             name: "Norautron",
             fullName: "Ole Martin Boe",
             email: "fakeemail@domain.com",
@@ -132,9 +138,41 @@ export default class Profile extends React.Component {
 
                 </div>
 
-                <Tooltip id="tooltip-icon" title="This will send you an email" placement="right">
-                    <Button raised style={{width: "200px", marginTop: "10px"}}>RESET PASSWORD</Button>
-                </Tooltip>
+                <div className="flex-row justify-space-between full-width" style={{margin: "30px 0"}}>
+                    <Unverified>
+                        <i className="fa fa-exclamation-circle space-right" aria-hidden="true"></i>
+                        Certifications Unverified
+                    </Unverified>
+
+                    <Button>Upload</Button>
+                </div>
+
+                {!this.state.passwordReset && <Button raised onClick={()=> this.setState({passwordReset: !this.state.passwordReset})} style={{width: "200px", marginTop: "10px"}}>RESET PASSWORD</Button>}
+
+                {this.state.passwordReset &&
+                <div className="flex-column align-end full-width">
+                    <div className="flex-row justify-space-between full-width">
+                        <TextField
+                            id="old-pw"
+                            label="Old Password"
+                            onChange={this.handleChange('oldPassword')}
+                            margin="normal"
+                            type="password"
+                        />
+
+                        <TextField
+                            id="new-pw"
+                            label="New Password"
+                            onChange={this.handleChange('oldPassword')}
+                            margin="normal"
+                            type="password"
+                        />
+                    </div>
+
+                    <Button raised onClick={()=> this.setState({passwordReset: !this.state.passwordReset})} style={{width: "200px", marginTop: "10px"}}>OK</Button>
+
+                </div>
+                }
 
             </ProfileContainer>
         )

@@ -8,7 +8,7 @@ import Button from 'material-ui/Button';
 const PartListContainer = styled.div`
   background: white;
   width: 500px;
-  height: 500px;
+  min-height: 500px;
   padding: 30px;
   margin: 20px;
   ${boxShadow("1px", "1px", "10px", "0", "rgba(0, 0, 0, 0.36)")};
