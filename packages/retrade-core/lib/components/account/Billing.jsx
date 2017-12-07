@@ -1,10 +1,14 @@
 import React from 'react';
 import styled from 'styled-components'
 import {borderRadius, boxShadow} from '../../stylesheets/style.utils.js';
+import BillingF from './BillingF'
 import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button';
 import Switch from 'material-ui/Switch';
 import Tooltip from 'material-ui/Tooltip';
+import Dialog, { DialogTitle } from 'material-ui/Dialog';
+import { Link } from 'react-router';
+
 
 const OrdersContainer = styled.div`
   background: white;
@@ -50,14 +54,7 @@ export default class Billing extends React.Component {
         super(props);
 
         this.state = {
-            notEditing: true,
-            sameAsBilling: false,
-            name: "Norautron",
-            fullName: "Ole Martin Boe",
-            email: "fakeemail@domain.com",
-            country: "Norway",
-            billingAddress: "2392 Fake St.",
-            deliveryAddress: "2392 Fake St.",
+            open: false,
         }
     }
 
@@ -65,6 +62,16 @@ export default class Billing extends React.Component {
         this.setState({
             [name]: event.target.value,
         });
+    };
+
+    handleClickOpen = () => {
+        this.setState({
+            open: true,
+        });
+    };
+
+    handleRequestClose = value => {
+        this.setState({ open: false });
     };
 
 
@@ -78,7 +85,7 @@ export default class Billing extends React.Component {
                     </div>
 
                     <div>
-                        <Button onClick={() => this.setState({notEditing: !this.state.notEditing})}>
+                        <Button onClick={() => this.setState({open: true})}>
                             <div className="flex-row">
                                 <i className="fa fa-eye space-right" aria-hidden="true"></i>
                                 View all
@@ -106,6 +113,9 @@ export default class Billing extends React.Component {
                 </div>
 
 
+                <Dialog onRequestClose={this.handleRequestClose} open={this.state.open}>
+                    <BillingF close={()=> this.setState({open: false})}/>
+                </Dialog>
 
             </OrdersContainer>
         )

@@ -11,8 +11,23 @@ import { newMutation } from 'meteor/vulcan:core';
 
 
 
-
 Meteor.startup(function () {
+/*  import {initAccounts, Resolvers} from 'meteor/nicolaslopezj:apollo-accounts';
+  import { addGraphQLResolvers } from 'meteor/vulcan:core';
+
+
+  initAccounts({
+    loginWithFacebook: false,
+    loginWithGoogle: false,
+    loginWithLinkedIn: false,
+    loginWithPassword: true
+  });*/
+
+
+  // console.log(Meteor.default_server.method_handlers.changePassword.toString());
+  // addGraphQLResolvers(...Resolvers());
+
+
   if (Users.find().fetch().length === 0) {
     Accounts.createUser({
       username: 'DemoUser',

@@ -1,26 +1,22 @@
 import React from 'react';
 import styled from 'styled-components'
 import Header from '../common/layouts/header/Header.jsx'
+import BannerSmall from '../common/layouts/header/BannerSmall.jsx'
 import Profile from './Profile.jsx'
 import PartList from './PartList.jsx'
 import Billing from './Billing.jsx'
+import ComponentContainer from '../common/layouts/body/ComponentContainer.jsx'
+
 
 
 const AccountContainer = styled.div`
-    background: #F5F5F5;
+    background: ${props => props.theme.secondaryBackground};
     width: 100%;
     flex-grow: 1;
     position: relative;
+    overflow: auto;
 `;
 
-const Banner = styled.div`
-    width:100%;
-    height: 75px;
-    background: ${props => props.theme.primaryBackground};
-    align-items: center;
-    z-index: 0;
-    padding-top: 15px;
-`;
 
 const Scroll = styled.div`
     position: absolute;
@@ -40,11 +36,11 @@ export default class Acccount extends React.Component {
 
     render() {
         return (
-            <div className="flex-column align-center justify-center flex-grow">
+            <ComponentContainer>
 
                 <Header/>
 
-                <Banner/>
+                <BannerSmall/>
 
                 <AccountContainer className="flex-column justify-center align-center">
                     <Scroll className="flex-column align-center full-width full-height">
@@ -59,8 +55,6 @@ export default class Acccount extends React.Component {
 
                                 <Billing/>
                             </div>
-
-
                         </div>
                     </Scroll>
 
@@ -68,7 +62,7 @@ export default class Acccount extends React.Component {
 
                 </AccountContainer>
 
-            </div>
+            </ComponentContainer>
         )
     }
 }

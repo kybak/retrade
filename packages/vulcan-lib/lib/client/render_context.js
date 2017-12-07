@@ -11,7 +11,7 @@ import {
 // init
 const history = browserHistory;
 const loginToken = global.localStorage['Meteor.loginToken'];
-const apolloClient = createApolloClient();
+export const apolloClient = createApolloClient();
 addReducer({ apollo: apolloClient.reducer() });
 addMiddleware(apolloClient.middleware());
 

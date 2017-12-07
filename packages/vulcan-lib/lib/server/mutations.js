@@ -37,7 +37,7 @@ export const newMutation = ({ collection, document, currentUser, validate, conte
 
   // we don't want to modify the original document
   let newDocument = Object.assign({}, document);
-  
+
   const collectionName = collection._name;
   const schema = collection.simpleSchema()._schema;
 
@@ -58,7 +58,7 @@ export const newMutation = ({ collection, document, currentUser, validate, conte
     // run validation callbacks
     newDocument = runCallbacks(`${collectionName}.new.validate`, newDocument, currentUser);
   }
-  
+
   // check if userId field is in the schema and add it to document if needed
   const userIdInSchema = Object.keys(schema).find(key => key === 'userId');
   if (!!userIdInSchema && !newDocument.userId) newDocument.userId = currentUser._id;
@@ -108,7 +108,6 @@ export const editMutation = ({ collection, documentId, set, unset, currentUser, 
 
   const collectionName = collection._name;
   const schema = collection.simpleSchema()._schema;
-
   // build mongo modifier from arguments
   let modifier = {$set: set, $unset: unset};
 
@@ -125,6 +124,7 @@ export const editMutation = ({ collection, documentId, set, unset, currentUser, 
     const modifiedProperties = _.keys(set).concat(_.keys(unset));
     modifiedProperties.forEach(function (fieldName) {
       var field = schema[fieldName];
+
       if (!field || !context.Users.canEditField(currentUser, field, document)) {
         throw new Error(Utils.encodeIntlError({id: 'app.disallowed_property_detected', value: fieldName}));
       }
@@ -160,7 +160,7 @@ export const editMutation = ({ collection, documentId, set, unset, currentUser, 
   if (_.isEmpty(modifier.$unset)) {
     delete modifier.$unset;
   }
-  
+
   // update document
   collection.update(documentId, modifier, {removeEmptyStrings: false});
 

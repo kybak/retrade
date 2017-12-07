@@ -117,6 +117,12 @@ const Input = styled.input`
     padding-left: 50px
 `;
 
+const AlreadyRegisteredLink = styled.span`
+    text-decoration: underline;
+    cursor: pointer;
+    color: #0295aa;
+`;
+
 
 class Signup extends React.Component {
 
@@ -145,22 +151,35 @@ class Signup extends React.Component {
     async handleSubmit(ev) {
         ev.preventDefault();
 
+        Accounts.createUser(this.state, (err)=> {
+            if (err) {
+                this.msg.error('Registration unsuccessful. ' + error, {
+                    time: 30000,
+                    type: 'error',
+                });
+            } else {
+                this.msg.success('Registration successful!', {
+                    time: 30000,
+                    type: 'success',
+                });
 
-        try {
-            const response = await this.props.createUser({variables: {input: this.state}});
-            this.msg.success('Registration successful. ID is: ' + response.data.createUser._id, {
-                time: 30000,
-                type: 'success',
-            });
+                Meteor.loginWithPassword(this.state.email, this.state.password, (err)=> {
+                    if (!err) {
+                        this.msg.success('Login successful. ID is: ' + Meteor.userId(), {
+                            time: 30000,
+                            type: 'success',
+                        });
 
-            this.reset()
-
-        } catch (error) {
-            this.msg.error('Registration unsuccessful. ' + error, {
-                time: 30000,
-                type: 'error',
-            });
-        }
+                        window.location='/account'
+                    } else {
+                        this.msg.error(err.message, {
+                            time: 30000,
+                            type: 'error',
+                        });
+                    }
+                });
+            }
+        });
 
     }
 
@@ -186,9 +205,9 @@ class Signup extends React.Component {
 
                             <div className="relative flex-row align-center justify-center">
                                 <IconContainer className="flex-row">
-                                    <i className="fa fa-envelope" aria-hidden="true"></i>
+                                    <i className="fa fa-user" aria-hidden="true"></i>
                                 </IconContainer>
-                                <TextInput auth placeholder="Name" required="true" onChange={ev=>this.setState({username: ev.target.value})}/>
+                                <TextInput auth placeholder="Company Name" required="true" onChange={ev=>this.setState({username: ev.target.value})}/>
                             </div>
 
                             <div className="relative flex-row align-center justify-center">
@@ -204,6 +223,11 @@ class Signup extends React.Component {
                                 </IconContainer>
                                 <TextInput auth type="password" placeholder="Password" required="true" onChange={ev=>this.setState({password: ev.target.value})} />
                             </div>
+
+                            <div style={{width: "325px"}} className="flex-row justify-end">
+                                <AlreadyRegisteredLink onClick={()=> window.location = '/login'}>Already registered?</AlreadyRegisteredLink>
+
+                            </div>
                         </div>
 
 
@@ -218,7 +242,7 @@ class Signup extends React.Component {
     }
 }
 
-export default withCreateUser(Signup)
+export default Signup
 
 /*
  App.propTypes = {

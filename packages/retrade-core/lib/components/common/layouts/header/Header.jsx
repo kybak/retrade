@@ -1,4 +1,5 @@
 import React from 'react';
+import {withCurrentUser} from 'meteor/vulcan:core'
 import { Link } from 'react-router';
 import styled from 'styled-components'
 import Menu, { MenuItem } from 'material-ui/Menu';
@@ -31,7 +32,7 @@ const MenuItemHeader = styled.li`
 `;
 
 
-export default class TopBar extends React.Component {
+class TopBar extends React.Component {
 
     constructor(props) {
         super(props);
@@ -50,8 +51,15 @@ export default class TopBar extends React.Component {
         this.setState({ open: false });
     };
 
+    logout = () => {
+      this.closeMenu();
+      Meteor.logout();
+      window.location = '/'
+    };
+
 
     render() {
+        const user = this.props.currentUser;
         return (
             <Bar className="flex-row justify-end align-center full-width">
 
@@ -74,40 +82,46 @@ export default class TopBar extends React.Component {
                 <NavItem>
                     <Link to={`/login`}>Login</Link>
                 </NavItem>
-                <NavItem>
-                    <span>|</span>
-                </NavItem>
-                <NavItem>
-                    <div className="flex-row align-center" onClick={this.openMenu}>
-                        <Button
-                            style={{color: "white"}}
-                            aria-owns={this.state.open ? 'simple-menu' : null}
-                            aria-haspopup="true"
-                            onClick={this.openMenu}
-                        >
-                            <span className="space-right">Norautron</span>
-                            <i className="fa fa-caret-down" aria-hidden="true"></i>
-                        </Button>
-                    </div>
+                {this.props.currentUser && (
+                    <div className="flex-row justify-end align-center">
+                        <NavItem>
+                            <span>|</span>
+                        </NavItem>
+                        <NavItem>
+                            <div className="flex-row align-center" onClick={this.openMenu}>
+                                <Button
+                                    style={{color: "white"}}
+                                    aria-owns={this.state.open ? 'simple-menu' : null}
+                                    aria-haspopup="true"
+                                    onClick={this.openMenu}
+                                >
+                                    <span className="space-right">{user.username}</span>
+                                    <i className="fa fa-caret-down" aria-hidden="true"></i>
+                                </Button>
+                            </div>
 
-                    <Menu
-                        autoWidth="true"
-                        id="simple-menu"
-                        anchorEl={this.state.anchorEl}
-                        open={this.state.open}
-                        onRequestClose={this.closeMenu}
-                    >
-                        <MenuItemHeader><b>Norautron</b></MenuItemHeader>
-                        <MenuItem onClick={this.closeMenu}>Orders</MenuItem>
-                        <Link to={`/account`}><MenuItem onClick={this.closeMenu}>My account</MenuItem></Link>
-                        <MenuItem onClick={this.closeMenu}>Logout</MenuItem>
-                    </Menu>
-                </NavItem>
+                            <Menu
+                                autoWidth="true"
+                                id="simple-menu"
+                                anchorEl={this.state.anchorEl}
+                                open={this.state.open}
+                                onRequestClose={this.closeMenu}
+                            >
+                                <MenuItemHeader><b>{user.username}</b></MenuItemHeader>
+                                <MenuItem onClick={this.closeMenu}>Orders</MenuItem>
+                                <Link to={`/account`}><MenuItem onClick={this.closeMenu}>My account</MenuItem></Link>
+                                <MenuItem onClick={this.logout}>Logout</MenuItem>
+                            </Menu>
+                        </NavItem>
+                    </div>
+                )}
+
 
             </Bar>
         )
     }
 }
 
+export default withCurrentUser(TopBar)
 
 

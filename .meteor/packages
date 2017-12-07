@@ -1,6 +1,9 @@
 # see http://docs.vulcanjs.org/packages
 
 vulcan:core
+vulcan:lib
+vulcan:email
+vulcan:users
 
 ############ Language Packages ############
 
@@ -16,5 +19,4 @@ accounts-password
 
 retrade:core
 fourseven:scss
-vulcan:email
-vulcan:admin
+nicolaslopezj:apollo-accounts

@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import {borderRadius, boxShadow, transition} from '../../stylesheets/style.utils.js';
 import Tooltip from 'material-ui/Tooltip';
 import Button from 'material-ui/Button';
+import { Link } from 'react-router';
 
 
 const PartListContainer = styled.div`
@@ -77,7 +78,7 @@ export default class PartList extends React.Component {
                     <Button>
                         <div className="flex-row">
                             <i className="fa fa-eye space-right" aria-hidden="true"></i>
-                            View all
+                            <Link to={`/part-list`} style={{color: "black", textDecoration: "none"}}>View all</Link>
                         </div>
                     </Button>
 

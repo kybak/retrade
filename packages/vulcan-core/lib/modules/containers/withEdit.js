@@ -1,8 +1,8 @@
 /*
 
-Generic mutation wrapper to edit a document in a collection. 
+Generic mutation wrapper to edit a document in a collection.
 
-Sample mutation: 
+Sample mutation:
 
   mutation moviesEdit($documentId: String, $set: MoviesInput, $unset: MoviesUnset) {
     moviesEdit(documentId: $documentId, set: $set, unset: $unset) {
@@ -10,7 +10,7 @@ Sample mutation:
     }
   }
 
-Arguments: 
+Arguments:
 
   - documentId: the id of the document to modify
   - set: an object containing all the fields to modify and their new values
@@ -19,7 +19,7 @@ Arguments:
 Child Props:
 
   - editMutation(documentId, set, unset)
-  
+
 */
 
 import React, { Component } from 'react';
@@ -47,7 +47,7 @@ export default function withEdit(options) {
     props: ({ ownProps, mutate }) => ({
       editMutation: (args) => {
         const { documentId, set, unset } = args;
-        return mutate({ 
+        return mutate({
           variables: { documentId, set, unset }
           // note: updateQueries is not needed for editing documents
         });

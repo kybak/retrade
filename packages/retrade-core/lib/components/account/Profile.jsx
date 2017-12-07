@@ -1,5 +1,9 @@
 import React from 'react';
+import {withCurrentUser, withEdit} from 'meteor/vulcan:core'
+import {getFragment, apolloClient} from 'meteor/vulcan:lib';
+import Users, {usersEdit} from 'meteor/vulcan:users'
 import styled from 'styled-components'
+import AlertContainer from 'react-alert'
 import {borderRadius, boxShadow, transition} from '../../stylesheets/style.utils.js';
 import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button';
@@ -11,7 +15,7 @@ const ProfileContainer = styled.div`
   width: 500px;
   min-height: 700px;
   padding: 30px;
-   margin: 20px;
+  margin: 20px;
   ${boxShadow("1px", "1px", "10px", "0", "rgba(0, 0, 0, 0.36)")};
   ${borderRadius("5px")};
   ${transition("all", ".25s")};
@@ -22,34 +26,95 @@ const Unverified = styled.span`
 `;
 
 
-export default class Profile extends React.Component {
+class Profile extends React.Component {
 
     constructor(props) {
         super(props);
+        let user = props.currentUser;
 
+        console.log(user);
         this.state = {
+            checked: (props.profile && (user.profile.deliveryAddress === user.profile.billingAddress)),
             notEditing: true,
             sameAsBilling: false,
             passwordReset: false,
-            name: "Norautron",
-            fullName: "Ole Martin Boe",
-            email: "fakeemail@domain.com",
-            country: "Norway",
-            billingAddress: "2392 Fake St.",
-            deliveryAddress: "2392 Fake St.",
+            user: {
+                username: user.username,
+                email: user.email,
+                profile: {
+                    fullName: user.profile ? user.profile.fullName : "",
+                    country: user.profile ? user.profile.country : "",
+                    billingAddress: user.profile ? user.profile.billingAddress : "",
+                    deliveryAddress: user.profile ? user.profile.deliveryAddress : "",
+                }
+            }
         }
     }
 
     handleChange = name => event => {
-        this.setState({
-            [name]: event.target.value,
-        });
+        let user = {...this.state.user};
+        if (name === "username" || name === "email") {
+            user[name] = event.target.value;
+        } else {
+            user.profile[name] = event.target.value;
+        }
+        this.setState({user});
     };
+
+    changeBilling = (e, checked) => {
+        let user = {...this.state.user};
+        this.setState({checked: !this.state.checked});
+        checked ? user.profile.deliveryAddress = user.profile.billingAddress : user.profile.deliveryAddress = "";
+        this.setState({user});
+    };
+
+    editUser = () => {
+        if (this.state.notEditing) {
+            this.setState({notEditing: false})
+        } else {
+            this.props.editMutation({
+                documentId: this.props.currentUser._id,
+                set: this.state.user,
+                unset: {}
+            }).then((res)=>console.log(res));
+            this.setState({notEditing: true})
+        }
+    };
+
+    changePassword = () => {
+        let oldPassword = document.getElementById('old-pw').value,
+            newPassword = document.getElementById('new-pw').value;
+        // if (!oldPassword || !newPassword) throw new Error('Old and new password are required');
+
+        this.setState({passwordReset: !this.state.passwordReset});
+
+        Accounts.changePassword(oldPassword, newPassword, (err, res) => {
+            if (err) {
+                this.msg.error(err.reason, {
+                    time: 30000,
+                    type: 'error',
+                });
+            } else {
+                this.msg.success("Password changed successfully", {
+                    time: 30000,
+                    type: 'success',
+                });
+            }
+
+        });
+
+    };
+
+    componentDidMount(props) {
+        if (this.state.billingAddress === this.state.deliveryAddress) this.setState({checked: true});
+    }
 
 
     render() {
         return (
             <ProfileContainer className="flex-column">
+                <AlertContainer ref={a => this.msg = a}/>
+
 
                 <div className="flex-row justify-space-between align-center full-width">
                     <div className="flex-row">
@@ -57,7 +122,7 @@ export default class Profile extends React.Component {
                     </div>
 
                     <div>
-                        <Button onClick={() => this.setState({notEditing: !this.state.notEditing})}>
+                        <Button onClick={() => this.editUser()}>
 
                             {this.state.notEditing ? (
                                 <div><i className="fa fa-pencil space-right" aria-hidden="true"></i>Edit</div>
@@ -70,50 +135,50 @@ export default class Profile extends React.Component {
 
                 <TextField
                     style={{width: "200px"}}
-                    id="name"
+                    id="company-name"
                     label="Company Name"
-                    value={this.state.name}
-                    onChange={this.handleChange('name')}
+                    value={this.state.user.username}
+                    onChange={this.handleChange('username')}
                     margin="normal"
                     disabled={this.state.notEditing}
                 />
 
                 <TextField
                     style={{width: "200px"}}
-                    id="name"
+                    id="full-name"
                     label="Full Name"
-                    value={this.state.fullName}
-                    onChange={this.handleChange('name')}
+                    value={this.state.user.profile.fullName}
+                    onChange={this.handleChange('fullName')}
                     margin="normal"
                     disabled={this.state.notEditing}
                 />
 
                 <TextField
                     style={{width: "200px"}}
-                    id="name"
+                    id="email"
                     label="Email Address"
-                    value={this.state.email}
-                    onChange={this.handleChange('name')}
+                    value={this.state.user["email"]}
+                    onChange={this.handleChange('email')}
                     margin="normal"
                     disabled={this.state.notEditing}
                 />
 
                 <TextField
                     style={{width: "200px"}}
-                    id="name"
+                    id="country"
                     label="Country"
-                    value={this.state.country}
-                    onChange={this.handleChange('name')}
+                    value={this.state.user.profile.country}
+                    onChange={this.handleChange('country')}
                     margin="normal"
                     disabled={this.state.notEditing}
                 />
 
                 <TextField
                     style={{width: "200px"}}
-                    id="name"
+                    id="billing-address"
                     label="Billing Address"
-                    value={this.state.billingAddress}
-                    onChange={this.handleChange('name')}
+                    value={this.state.user.profile.billingAddress}
+                    onChange={this.handleChange('billingAddress')}
                     margin="normal"
                     disabled={this.state.notEditing}
                 />
@@ -121,16 +186,16 @@ export default class Profile extends React.Component {
                 <div className="flex-row full-width align-end justify-space-between space-top">
                     <TextField
                         style={{width: "200px"}}
-                        id="name"
+                        id="delivery-address"
                         label="Delivery Address"
-                        value={this.state.deliveryAddress}
-                        onChange={this.handleChange('name')}
+                        value={this.state.user.profile.deliveryAddress}
+                        onChange={this.handleChange('deliveryAddress')}
                         margin="normal"
                         disabled={this.state.notEditing}
                     />
 
                     <div className="flex-row align-center">
-                        <Switch checked={this.state.sameAsBilling} onChange={this.handleChange("name")}
+                        <Switch checked={this.state.checked} onChange={this.changeBilling}
                                 aria-label="SameAsBillingAddress" disabled={this.state.notEditing}
                         />
                         <span className="space-left">Same as billing</span>
@@ -147,7 +212,9 @@ export default class Profile extends React.Component {
                     <Button>Upload</Button>
                 </div>
 
-                {!this.state.passwordReset && <Button raised onClick={()=> this.setState({passwordReset: !this.state.passwordReset})} style={{width: "200px", marginTop: "10px"}}>RESET PASSWORD</Button>}
+                {!this.state.passwordReset &&
+                <Button raised onClick={() => this.setState({passwordReset: !this.state.passwordReset})}
+                        style={{width: "200px", marginTop: "10px"}}>CHANGE PASSWORD</Button>}
 
                 {this.state.passwordReset &&
                 <div className="flex-column align-end full-width">
@@ -155,7 +222,6 @@ export default class Profile extends React.Component {
                         <TextField
                             id="old-pw"
                             label="Old Password"
-                            onChange={this.handleChange('oldPassword')}
                             margin="normal"
                             type="password"
                         />
@@ -163,13 +229,13 @@ export default class Profile extends React.Component {
                         <TextField
                             id="new-pw"
                             label="New Password"
-                            onChange={this.handleChange('oldPassword')}
                             margin="normal"
                             type="password"
                         />
                     </div>
 
-                    <Button raised onClick={()=> this.setState({passwordReset: !this.state.passwordReset})} style={{width: "200px", marginTop: "10px"}}>OK</Button>
+                    <Button raised onClick={this.changePassword}
+                            style={{width: "200px", marginTop: "10px"}}>OK</Button>
 
                 </div>
                 }
@@ -178,3 +244,12 @@ export default class Profile extends React.Component {
         )
     }
 }
+
+
+const UserFragment = getFragment('UsersCurrent');
+const mutationOptions = {
+    collection: Users,
+    fragment: UserFragment
+};
+
+export default withEdit(mutationOptions)(withCurrentUser(Profile))

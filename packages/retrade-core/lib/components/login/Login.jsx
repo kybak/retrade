@@ -192,7 +192,7 @@ export default class Login extends React.Component {
                     type: 'success',
                 });
 
-                this.reset();
+                window.location='/account'
             } else {
                 this.msg.error(err.message, {
                     time: 30000,
@@ -239,7 +239,8 @@ export default class Login extends React.Component {
                                 <TextInput auth type="password" placeholder="Password" required="true" onChange={e=>this.setState({password: e.target.value})}/>
                             </div>
 
-                            <div style={{width: "325px"}} className="flex-row justify-end">
+                            <div style={{width: "325px"}} className="flex-row justify-space-between">
+                                <ForgotPasswordLink onClick={()=> window.location = '/signup'}>Need an account?</ForgotPasswordLink>
                                 <ForgotPasswordLink onClick={this.forgotPassword}>Forgot password?</ForgotPasswordLink>
                             </div>
                         </div>
