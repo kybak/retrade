@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components'
 import {borderRadius, boxShadow} from '../../stylesheets/style.utils.js';
-import BillingF from './BillingF'
+import BillingF from './modals/BillingF'
 import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button';
 import Switch from 'material-ui/Switch';

@@ -26,7 +26,7 @@ const schema = {
     optional: true,
     viewableBy: ['guests'],
     insertableBy: ['guests'],
-    editableBy: (user, doc)=> user._id === doc._id,
+    editableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id),
     onInsert: user => {
       if (user.services && user.services.twitter && user.services.twitter.screenName) {
         return user.services.twitter.screenName;
@@ -36,7 +36,7 @@ const schema = {
   emails: {
     type: Array,
     optional: true,
-    editableBy: (user, doc)=> user._id === doc._id,
+    editableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id),
   },
   'emails.$': {
     type: Object,
@@ -78,8 +78,8 @@ const schema = {
     type: Object,
     optional: true,
     blackbox: true,
-    editableBy: (user, doc)=> user._id === doc._id,
-    viewableBy: (user, doc)=> user._id === doc._id,
+    editableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id),
+    viewableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id),
     insertableBy: ['guests'],
   },
   // telescope-specific data, kept for backward compatibility and migration purposes
@@ -113,7 +113,7 @@ const schema = {
     optional: true,
     control: "text",
     insertableBy: ['members'],
-    editableBy: ['members'],
+    editableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id),
     viewableBy: ['guests'],
     onInsert: (user, options) => {
       const profileName = Utils.getNestedProperty(user, 'profile.name');
@@ -138,7 +138,7 @@ const schema = {
     mustComplete: true,
     control: "text",
     insertableBy: ['guests'],
-    editableBy: ['members'],
+    editableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id),
     viewableBy: ownsOrIsAdmin,
     onInsert: (user) => {
       // look in a few places for the user email

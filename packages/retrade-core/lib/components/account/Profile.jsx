@@ -1,7 +1,7 @@
 import React from 'react';
 import {withCurrentUser, withEdit} from 'meteor/vulcan:core'
 import {getFragment, apolloClient} from 'meteor/vulcan:lib';
-import Users, {usersEdit} from 'meteor/vulcan:users'
+import Users from 'meteor/vulcan:users'
 import styled from 'styled-components'
 import AlertContainer from 'react-alert'
 import {borderRadius, boxShadow, transition} from '../../stylesheets/style.utils.js';
@@ -32,7 +32,6 @@ class Profile extends React.Component {
         super(props);
         let user = props.currentUser;
 
-        console.log(user);
         this.state = {
             checked: (props.profile && (user.profile.deliveryAddress === user.profile.billingAddress)),
             notEditing: true,

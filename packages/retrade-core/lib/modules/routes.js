@@ -7,7 +7,8 @@ import Login from '../components/login/Login.jsx';
 import Signup from '../components/signup/Signup.jsx';
 import Account from '../components/account/Account.jsx';
 import PartList from '../components/account/PartListF.jsx';
-import Billing from '../components/account/BillingF.jsx';
+import Billing from '../components/account/modals/BillingF.jsx';
+import Admin from '../components/admin/Admin.jsx';
 
 
 
@@ -21,4 +22,6 @@ addRoute({ name: 'signup', path: '/signup', component: Signup, layoutName: "Main
 addRoute({ name: 'account', path: '/account', component: Account, layoutName: "MainLayout"});
 addRoute({ name: 'part-list', path: '/part-list', component: PartList, layoutName: "MainLayout"});
 addRoute({ name: 'billing', path: '/billing', component: Billing, layoutName: "MainLayout"});
+addRoute({ name: 'admin', path: '/admin', component: Admin, layoutName: "MainLayout"});
+
 

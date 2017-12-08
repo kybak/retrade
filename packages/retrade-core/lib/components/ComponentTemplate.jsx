@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components'
+// import ComponentContainer from '../common/layouts/body/ComponentContainer.jsx'
+
 
 export default class ComponentTemplate extends React.Component {
 
@@ -11,9 +13,10 @@ export default class ComponentTemplate extends React.Component {
 
     render() {
         return (
-            <div className="flex-column">
+            <ComponentContainer>
 
-            </div>
+
+            </ComponentContainer>
         )
     }
 }

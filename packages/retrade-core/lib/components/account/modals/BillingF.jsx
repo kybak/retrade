@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components'
-import {borderRadius, boxShadow} from '../../stylesheets/style.utils.js';
-import Header from '../common/layouts/header/Header.jsx'
-import BannerSmall from '../common/layouts/header/BannerSmall.jsx'
-import ComponentContainer from '../common/layouts/body/ComponentContainer.jsx'
+import {borderRadius, boxShadow} from '../../../stylesheets/style.utils.js';
+import Header from '../../common/layouts/header/Header.jsx'
+import BannerSmall from '../../common/layouts/header/BannerSmall.jsx'
+import ComponentContainer from '../../common/layouts/body/ComponentContainer.jsx'
 import Button from 'material-ui/Button';
 import Tooltip from 'material-ui/Tooltip';
 import MenuItem from 'material-ui/Menu/MenuItem';
