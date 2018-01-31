@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
+import { Components, registerComponent } from 'meteor/vulcan:core';
 import styled from 'styled-components'
 import {boxShadow, borderRadius, transition} from '../../stylesheets/style.utils.js';
 import Header from '../common/layouts/header/Header.jsx'
@@ -131,7 +132,7 @@ const ForgotPasswordLink = styled.span`
 `;
 
 
-export default class Login extends React.Component {
+class Login extends PureComponent {
 
     constructor(props) {
         super(props);
@@ -187,31 +188,24 @@ export default class Login extends React.Component {
 
         Meteor.loginWithPassword(this.state.email, this.state.password, (err, res)=> {
             if (!err) {
-                this.msg.success('Login successful. ID is: ' + Meteor.userId(), {
+                /*this.msg.success('Login successful. ID is: ' + Meteor.userId(), {
                     time: 30000,
                     type: 'success',
-                });
+                });*/
 
                 window.location='/account'
             } else {
-                this.msg.error(err.message, {
+                /*this.msg.error(err.message, {
                     time: 30000,
                     type: 'error',
-                });
+                });*/
             }
         });
     }
 
-    /*componentDidMount() {
-        this.setState({top: "50%"})
-    }*/
-
     render() {
-
         return (
             <div className="flex-column">
-                <AlertContainer ref={a => this.msg = a} />
-
                 <Header/>
                 <Filter/>
                 <Banner className="flex-row">
@@ -278,10 +272,13 @@ export default class Login extends React.Component {
                 </ForgotPasswordContainer>
 
                 <Footer/>
+
             </div>
         )
     }
 }
+
+registerComponent('Login', Login);
 
 /*
  App.propTypes = {

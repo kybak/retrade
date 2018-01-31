@@ -1,9 +1,10 @@
 import React from 'react';
+import { registerComponent } from 'meteor/vulcan:core';
 import styled from 'styled-components'
 // import ComponentContainer from '../common/layouts/body/ComponentContainer.jsx'
 
 
-export default class ComponentTemplate extends React.Component {
+class ComponentTemplate extends React.Component {
 
     constructor(props) {
         super(props);
@@ -20,3 +21,5 @@ export default class ComponentTemplate extends React.Component {
         )
     }
 }
+
+registerComponent('ComponentTemplate', ComponentTemplate);

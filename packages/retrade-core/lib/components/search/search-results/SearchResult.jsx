@@ -1,9 +1,16 @@
 import React from 'react';
+import {withList, registerComponent} from "meteor/vulcan:core";
+import Inventory from '../../../modules/inventory/collection.js'
 import styled from 'styled-components'
-import { Quantity } from '../../common/presentational-components/inputs/Quantity.js'
-import { Price} from '../../common/presentational-components/Price.js'
-import { borderRadius, boxShadow, transition, boxSizing, fontSmoothing } from '../../../stylesheets/style.utils.js';
-
+import {Quantity} from '../../common/presentational-components/inputs/Quantity.js'
+import {Price} from '../../common/presentational-components/Price.js'
+import {borderRadius, boxShadow, transition, boxSizing, fontSmoothing} from '../../../stylesheets/style.utils.js';
+import ExpansionPanel, {
+    ExpansionPanelSummary,
+    ExpansionPanelDetails,
+} from 'material-ui/ExpansionPanel';
+import Typography from 'material-ui/Typography';
+import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 
 const FlipContainer = styled.div`
   position: relative;
@@ -46,7 +53,6 @@ const Front = ResultBox.extend`
 const Back = ResultBox.extend`
   transform: rotateY(180deg);
 `;
-
 
 
 const AddRemove = styled.div`
@@ -109,9 +115,7 @@ const AddButton = styled.button`
 `;
 
 
-
-
-export default class SearchResult extends React.Component {
+class SearchResult extends React.Component {
 
     constructor(props) {
         super(props);
@@ -133,15 +137,56 @@ export default class SearchResult extends React.Component {
     }
 
 
+    componentWillReceiveProps(n) {
+        // console.log(n);
+    }
+
+
     render() {
+        const {itemName, itemNumber, accountCode, customerRelation, externalItemNumber, mfm} = this.props.component;
         return (
-            <FlipContainer>
+            <ExpansionPanel style={{width:"800px"}}>
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
+                    <Typography>{itemName}</Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                    <div className="flex-column full-width">
+                        <Typography>
+                            <div className="flex-row"><b>Item number: </b> {itemNumber}</div>
+                            <div className="flex-row"><b>Account code: </b> {accountCode}</div>
+                            <div className="flex-row"><b>Customer relation: </b> {customerRelation}</div>
+                            <div className="flex-row"><b>External item number: </b> {externalItemNumber}</div>
+                            <div className="flex-row"><b>MFM: </b> {mfm}</div>
+                        </Typography>
+
+                        <div className="flex-row full-width justify-end">
+                            <AddButton onClick={this.add}>Add</AddButton>
+                        </div>
+                    </div>
+
+
+                </ExpansionPanelDetails>
+            </ExpansionPanel>
+        )
+    }
+}
+
+/*
+ App.propTypes = {
+ connected: React.PropTypes.bool,
+ loading: React.PropTypes.bool,
+ likes: React.PropTypes.number,
+ friends: React.PropTypes.number
+ };*/
+
+registerComponent('SearchResult', SearchResult);
+/*<FlipContainer key={itemNumber}>
                 <Flipper flipped={this.state.flipped}>
 
                     <Front className="flex-row">
                         <div className="flex-column">
-                            <b>{this.props.name}</b>
-                            <span>500 000 pieces</span>
+                            <b>{itemName}</b>
+                            <span>{itemNumber}</span>
                         </div>
 
                         <Price className="flex-column">
@@ -156,7 +201,7 @@ export default class SearchResult extends React.Component {
                     <Back className="flex-row">
                         <Added className="flex-column" added={this.state.added}>
                             <h3 style={{margin:0}}>ADDED</h3>
-                            <span>{this.props.name}</span>
+                            <span>{itemName}</span>
                         </Added>
 
                         <div className="flex-column">
@@ -174,15 +219,4 @@ export default class SearchResult extends React.Component {
                     </Back>
 
                 </Flipper>
-            </FlipContainer>
-        )
-    }
-}
-
-/*
- App.propTypes = {
- connected: React.PropTypes.bool,
- loading: React.PropTypes.bool,
- likes: React.PropTypes.number,
- friends: React.PropTypes.number
- };*/
+            </FlipContainer>*/

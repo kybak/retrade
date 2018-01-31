@@ -90,8 +90,8 @@ Users.getEditUrl = function (user, isAbsolute) {
 Users.getTwitterName = function (user) {
   // return twitter name provided by user, or else the one used for twitter login
   if (typeof user !== "undefined") {
-    if (Utils.checkNested(user, 'profile', 'twitter')) {
-      return user.profile.twitter;
+    if (user.twitterUsername) {
+      return user.twitterUsername;
     } else if(Utils.checkNested(user, 'services', 'twitter', 'screenName')) {
       return user.services.twitter.screenName;
     }

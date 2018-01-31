@@ -1,9 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import Tracker from 'tracker-component';
 import { Accounts } from 'meteor/accounts-base';
 import { KEY_PREFIX } from '../../login_session.js';
-import { Components, registerComponent, withCurrentUser } from 'meteor/vulcan:core';
+import { Components, registerComponent, withCurrentUser, Callbacks, runCallbacks } from 'meteor/vulcan:core';
 import { intlShape } from 'meteor/vulcan:i18n';
 import { withApollo } from 'react-apollo';
 
@@ -36,16 +37,28 @@ export class AccountsLoginForm extends Tracker.Component {
       }
     }
 
+    const postLogInAndThen = hook => {
+      return () => {
+        props.client.resetStore();
+
+        if(Callbacks['users.postlogin']) { // execute any post-sign-in callbacks
+          runCallbacks('users.postlogin');
+        } else { // or else execute the hook
+          hook();
+        }
+      }
+    }
+
     // Set inital state.
     this.state = {
       messages: [],
       waiting: true,
       formState: props.formState ? props.formState : (currentUser ? STATES.PROFILE : STATES.SIGN_IN),
       onSubmitHook: props.onSubmitHook || Accounts.ui._options.onSubmitHook,
-      onSignedInHook: resetStoreAndThen(props.onSignedInHook || Accounts.ui._options.onSignedInHook),
+      onSignedInHook: resetStoreAndThen(postLogInAndThen(props.onSignedInHook || Accounts.ui._options.onSignedInHook)),
       onSignedOutHook: resetStoreAndThen(props.onSignedOutHook || Accounts.ui._options.onSignedOutHook),
       onPreSignUpHook: props.onPreSignUpHook || Accounts.ui._options.onPreSignUpHook,
-      onPostSignUpHook: resetStoreAndThen(props.onPostSignUpHook || Accounts.ui._options.onPostSignUpHook),
+      onPostSignUpHook: resetStoreAndThen(postLogInAndThen(props.onPostSignUpHook || Accounts.ui._options.onPostSignUpHook)),
     };
   }
 
@@ -108,11 +121,11 @@ export class AccountsLoginForm extends Tracker.Component {
         });
       }
 
-      const loggingInMessage = this.context.intl.formatMessage({id: 'accounts.logging_in'});
+      const loggingInMessage = 'accounts.logging_in';
 
       if (this.state.formState == STATES.PROFILE) {
         if (!this.props.currentUser && this.state.messages.length === 0) {
-          this.showMessage(loggingInMessage);
+          // this.showMessage(loggingInMessage); // don't show logging in message for now
         } else if (this.props.currentUser &&
           this.state.messages.find(({ message }) => message === loggingInMessage)) {
           this.clearMessage(loggingInMessage);
@@ -221,7 +234,7 @@ export class AccountsLoginForm extends Tracker.Component {
       type: 'password',
       required: true,
       onChange: this.handleChange.bind(this, 'newPassword'),
-      message: this.getMessageForField('newPassword'),
+      message: this.getMessageForField('password'),
     };
   }
 
@@ -332,7 +345,7 @@ export class AccountsLoginForm extends Tracker.Component {
       });
     }
 
-    if (this.showCreateAccountLink()) {
+    if (this.showCreateAccountLink() && this.props.showSignUpLink) {
       loginButtons.push({
         id: 'switchToSignUp',
         label: this.context.intl.formatMessage({id: 'accounts.sign_up'}),
@@ -342,7 +355,7 @@ export class AccountsLoginForm extends Tracker.Component {
       });
     }
 
-    if (formState == STATES.SIGN_UP || formState == STATES.PASSWORD_RESET) {
+    if ((formState == STATES.SIGN_UP || formState == STATES.PASSWORD_RESET) && this.props.showSignInLink) {
       loginButtons.push({
         id: 'switchToSignIn',
         label: this.context.intl.formatMessage({id: 'accounts.sign_in'}),
@@ -625,8 +638,13 @@ export class AccountsLoginForm extends Tracker.Component {
       Meteor.loginWithPassword(loginSelector, password, (error, result) => {
         onSubmitHook(error,formState);
         if (error) {
+          console.log(error);
           const errorId = `accounts.error_${error.reason.toLowerCase().replace(/ /g, '_')}`;
-          this.showMessage(this.context.intl.formatMessage({id: errorId}) || this.context.intl.formatMessage({id: 'accounts.error_unknown'}), 'error');
+          if (this.context.intl.formatMessage({id: errorId})) {
+            this.showMessage(errorId);
+          } else {
+            this.showMessage('accounts.error_unknown');
+          }
         }
         else {
           loginResultCallback(() => this.state.onSignedInHook());
@@ -685,11 +703,16 @@ export class AccountsLoginForm extends Tracker.Component {
     loginWithService(options, (error) => {
       onSubmitHook(error,formState);
       if (error) {
+        console.log(error)
         if (error instanceof Accounts.LoginCancelledError) {
           // do nothing
         } else {
           const errorId = `accounts.error_${error.reason.toLowerCase().replace(/ /g, '_')}`;
-          this.showMessage((error.reason && this.context.intl.formatMessage({id: errorId})) || this.context.intl.formatMessage({id: 'accounts.error_unknown'}))
+          if (this.context.intl.formatMessage({id: errorId})) {
+            this.showMessage(errorId);
+          } else {
+            this.showMessage('accounts.error_unknown');
+          }
         }
       } else {
         this.setState({ formState: STATES.PROFILE });
@@ -750,8 +773,16 @@ export class AccountsLoginForm extends Tracker.Component {
     const SignUp = function(_options) {
       Accounts.createUser(_options, (error) => {
         if (error) {
-          const errorId = `accounts.error_${error.reason.toLowerCase().replace(/ /g, '_')}`;
-          this.showMessage(this.context.intl.formatMessage({id: errorId}) || this.context.intl.formatMessage({id: 'accounts.error_unknown'}), 'error');
+          console.log(error);
+
+          const errorId = `accounts.error_${error.reason.toLowerCase().replace(/ /g, '_').replace('.','')}`;
+
+          if (this.context.intl.formatMessage({id: errorId})){
+            this.showMessage(errorId, 'error');
+          } else {
+            this.showMessage('accounts.error_unknown', 'error');
+          }
+
           if (this.context.intl.formatMessage({id: `error.accounts_${error.reason}`})) {
             onSubmitHook(`error.accounts.${error.reason}`, formState);
           }
@@ -770,7 +801,6 @@ export class AccountsLoginForm extends Tracker.Component {
         this.setState({ waiting: false });
       });
     };
-
     if (!error) {
       this.setState({ waiting: true });
       // Allow for Promises to return.
@@ -797,16 +827,18 @@ export class AccountsLoginForm extends Tracker.Component {
     }
 
     this.clearMessages();
+
     if (this.validateField('email', email)) {
       this.setState({ waiting: true });
 
       Accounts.forgotPassword({ email: email }, (error) => {
+        console.log(error)
         if (error) {
           const errorId = `accounts.error_${error.reason.toLowerCase().replace(/ /g, '_')}`;
-          this.showMessage(this.context.intl.formatMessage({id: errorId}) || this.context.intl.formatMessage({id: 'accounts.error_unknown'}), 'error');
+          this.showMessage(errorId, 'error');
         }
         else {
-          this.showMessage(this.context.intl.formatMessage({id: 'accounts.info_email_sent'}), 'success', 5000);
+          this.showMessage('accounts.info_email_sent', 'success', 5000);
           this.clearDefaultFieldValues();
         }
         onSubmitHook(error, formState);
@@ -837,11 +869,11 @@ export class AccountsLoginForm extends Tracker.Component {
       Accounts.resetPassword(token, newPassword, (error) => {
         if (error) {
           const errorId = `accounts.error_${error.reason.toLowerCase().replace(/ /g, '_')}`;
-          this.showMessage(this.context.intl.formatMessage({id: errorId}) || this.context.intl.formatMessage({id: 'accounts.error_unknown'}), 'error');
+          this.showMessage(errorId, 'error');
           onSubmitHook(error, formState);
         }
         else {
-          this.showMessage(this.context.intl.formatMessage({id: 'accounts.info_password_changed'}), 'success', 5000);
+          this.showMessage('accounts.info_password_changed', 'success', 5000);
           onSubmitHook(null, formState);
           this.setState({ formState: STATES.PROFILE });
           Accounts._loginButtonsSession.set('resetPasswordToken', null);
@@ -854,11 +886,11 @@ export class AccountsLoginForm extends Tracker.Component {
       Accounts.changePassword(password, newPassword, (error) => {
         if (error) {
           const errorId = `accounts.error_${error.reason.toLowerCase().replace(/ /g, '_')}`;
-          this.showMessage(this.context.intl.formatMessage({id: errorId}) || this.context.intl.formatMessage({id: 'accounts.error_unknown'}), 'error');
+          this.showMessage(errorId, 'error');
           onSubmitHook(error, formState);
         }
         else {
-          this.showMessage(this.context.intl.formatMessage({id: 'accounts.info_password_changed'}), 'success', 5000);
+          this.showMessage('accounts.info_password_changed', 'success', 5000);
           onSubmitHook(null, formState);
           this.setState({ formState: STATES.PROFILE });
           this.clearDefaultFieldValues();
@@ -867,11 +899,11 @@ export class AccountsLoginForm extends Tracker.Component {
     }
   }
 
-  showMessage(message, type, clearTimeout, field){
-    if (message) {
+  showMessage(messageId, type, clearTimeout, field){
+    if (messageId) {
       this.setState(({ messages = [] }) => {
         messages.push({
-          message,
+          message: this.context.intl.formatMessage({id: messageId}),
           type,
           ...(field && { field }),
         });
@@ -880,7 +912,7 @@ export class AccountsLoginForm extends Tracker.Component {
       if (clearTimeout) {
         this.hideMessageTimout = setTimeout(() => {
           // Filter out the message that timed out.
-          this.clearMessage(message);
+          this.clearMessage(messageId);
         }, clearTimeout);
       }
     }
@@ -931,6 +963,16 @@ export class AccountsLoginForm extends Tracker.Component {
       />
     );
   }
+}
+
+AccountsLoginForm.propTypes = {
+  showSignInLink: PropTypes.bool,
+  showSignUpLink: PropTypes.bool,
+}
+
+AccountsLoginForm.defaultProps = {
+  showSignInLink: true,
+  showSignUpLink: true,
 }
 
 AccountsLoginForm.contextTypes = {

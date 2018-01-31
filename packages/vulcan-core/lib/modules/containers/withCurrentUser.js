@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { getFragment } from 'meteor/vulcan:lib';
-import { graphql } from 'react-apollo';   
-import gql from 'graphql-tag';    
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
 
 const withCurrentUser = component => {
 
@@ -9,13 +9,23 @@ const withCurrentUser = component => {
     gql`
       query getCurrentUser {
         currentUser {
-          ...UsersCurrent
+              _id
+    username
+    createdAt
+    isAdmin
+    displayName
+    email
+    emailHash
+    slug
+    groups
+    services
+    avatarUrl
+    pageUrl
         }
       }
-      ${getFragment('UsersCurrent')}
     `, {
       alias: 'withCurrentUser',
-      
+
       props(props) {
         const {data: {loading, currentUser}} = props;
         return {

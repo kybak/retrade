@@ -1,8 +1,25 @@
+import { debug } from './debug.js';
+
+/**
+ * @summary A list of all registered callback hooks
+ */
+export const CallbackHooks = [];
+
 /**
  * @summary Callback hooks provide an easy way to add extra steps to common operations.
  * @namespace Callbacks
  */
 export const Callbacks = {};
+
+
+/**
+ * @summary Register a callback
+ * @param {String} hook - The name of the hook
+ * @param {Function} callback - The callback function
+ */
+export const registerCallback = function (callback) {
+  CallbackHooks.push(callback);
+};
 
 /**
  * @summary Add a callback function to a hook
@@ -56,14 +73,21 @@ export const runCallbacks = function () {
 
     return callbacks.reduce(function(accumulator, callback) {
 
+      debug(`// Running callback [${callback.name}] on hook [${hook}]`);
+
       const newArguments = [accumulator].concat(args);
       
       try {
         const result = callback.apply(this, newArguments);
 
+        // if callback is only supposed to run once, remove it
+        if (callback.runOnce) {
+          removeCallback(hook, callback.name);
+        }
+
         if (typeof result === 'undefined') {
           // if result of current iteration is undefined, don't pass it on
-          console.log(`// Warning: Sync callback [${callback.name}] in hook [${hook}] didn't return a result!`)
+          // debug(`// Warning: Sync callback [${callback.name}] in hook [${hook}] didn't return a result!`)
           return accumulator
         } else {
           return result;
@@ -105,7 +129,7 @@ export const runCallbacksAsync = function () {
     Meteor.defer(function () {
       // run all post submit server callbacks on post object successively
       callbacks.forEach(function(callback) {
-        // console.log("// "+hook+": running callback ["+callback.name+"] at "+moment().format("hh:mm:ss"))
+        debug(`// Running async callback [${callback.name}] on hook [${hook}]`);
         callback.apply(this, args);
       });
     });

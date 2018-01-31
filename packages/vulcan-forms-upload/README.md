@@ -25,7 +25,7 @@ git checkout nova-classic
 ### 2. NPM dependency
 This package depends on the awesome `react-dropzone` ([repo](https://github.com/okonet/react-dropzone)), you need to install the dependency:
 ```
-npm install react-dropzone isomorphic-fetch
+npm install react-dropzone cross-fetch
 ```
 
 ### 3. Cloudinary account
@@ -145,7 +145,7 @@ Now, you also need to update the query fragments related to `User` when you want
 ## S3? Google Cloud?
 Feel free to contribute to add new features and flexibility to this package :)
 
-You are welcome to come chat about it [on the Nova Slack chatroom](http://slack.telescopeapp.org)
+You are welcome to come chat about it [in the Slack chatroom](http://slack.vulcanjs.org)
 
 ## What about `nova:cloudinary` ?
 This package and `nova:cloudinary` share a settings in common: `cloudinaryCloudName`. They are fully compatible.

@@ -1,5 +1,5 @@
 import React from 'react';
-import SearchResult from './search-results/SearchResult.jsx'
+import {Components, withList, registerComponent} from "meteor/vulcan:core";
 import Header from '../common/layouts/header/Header.jsx'
 import Footer from '../common/layouts/footer/Footer.js'
 import SearchForm from './SearchForm.jsx'
@@ -11,13 +11,14 @@ const SearchSection = styled.div.attrs({
     $top: props => props.top
 })`
     top: ${props => props.$top};
-    position: relative!important;
+    position: absolute;
     width:100%!important;
     height: 180px;
     background: ${props => props.theme.primaryBackground};
     align-items: center;
     z-index: 0;
     padding-top: 40px;
+    z-index: 1;
     ${transition("all", ".5s")};
     
     
@@ -40,51 +41,46 @@ const SearchSection = styled.div.attrs({
       }
   `;
 
-const SearchResults = styled.div`
-    flex-grow: 1;
-    width: 100%;
-`;
+function TabContainer(props) {
+    return (
+        <Typography component="div" style={{padding: 8 * 3}}>
+            {props.children}
+        </Typography>
+    );
+}
 
-const fakeData = [
-    {name: "DI SCHOTTKY MBRS340 FCS"},
-    {name: "DI SCHOTTKY MBRS341 FCS"},
-    {name: "DI SCHOTTKY MBRS342 FCS"},
-    {name: "DI SCHOTTKY MBRS343 FCS"},
-];
-
-export default class Search extends React.Component {
+class Search extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.go = this.go.bind(this);
 
+
         this.state = {
             showResults: false,
-            top: "0px"
+            top: "0px",
+            search: "",
+            total: 0,
+            skip: 0,
+            sort: "itemName",
+            value: 0
         };
     }
 
-    go(e) {
+    go(e, s) {
         e.preventDefault();
         this.setState({top: "-100px"});
-
         const self = this;
+
+        // TODO remove timeout
+        // timeout to simulate network delay
         setTimeout(function () {
             self.setState({showResults: true});
+            self.setState({search: s});
         }, 250);
     }
 
-    getResults() {
-        const data = fakeData.map(component => <div><SearchResult name={component.name}/></div>);
-
-        return (
-            <Stagger transition="fadeIn" delay={200} className="flex-column">
-                {data}
-            </Stagger>
-
-        );
-    }
 
     render() {
         const showResults = this.state.showResults;
@@ -99,19 +95,25 @@ export default class Search extends React.Component {
                     {/*<img src="/bulb_smooth.png" height="200"/>*/}
 
                     <div className="flex-column">
-                        <SearchForm submit={(e) => this.go(e)}/>
+                        <SearchForm submit={(e, s) => this.go(e, s)}/>
                     </div>
 
                 </SearchSection>
 
-
-                <SearchResults className="flex-column justify-center align-center">
-                    {showResults ? this.getResults() : <h1>Enter your query above</h1>}
-                </SearchResults>
+                <Components.SearchResults
+                    showResults={this.state.showResults}
+                    terms={{query: this.state.search, skip: this.state.skip, limit: 10, sort: {[this.state.sort]: 1}}}
+                    setSkip={s => this.setState({skip: s})}
+                    changeSort={e => this.setState({sort: e.target.value})}
+                    skip={this.state.skip}
+                />
 
                 <Footer/>
             </div>
         )
     }
 }
+
+
+registerComponent('Search', Search);
 

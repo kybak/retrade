@@ -1,8 +1,7 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import { getDataFromTree, ApolloProvider } from 'react-apollo';
-// import styleSheet from 'styled-components/lib/models/StyleSheet';
-
+import _ from 'underscore'
 import { Meteor } from 'meteor/meteor';
 
 import {
@@ -10,7 +9,7 @@ import {
   addRoute,
   Routes, populateComponentsApp, populateRoutesApp, initializeFragments,
   getRenderContext,
-  dynamicLoader,
+  runCallbacks,
 } from 'meteor/vulcan:lib';
 
 import { RouterServer } from './router.jsx';
@@ -27,43 +26,49 @@ Meteor.startup(() => {
   const indexRoute = _.filter(Routes, route => route.path === '/')[0];
   const childRoutes = _.reject(Routes, route => route.path === '/');
 
-  if (indexRoute) {
-    delete indexRoute.path; // delete the '/' path to avoid warning
+  const indexRouteWithoutPath = _.clone(indexRoute);
+
+  if (indexRouteWithoutPath) {
+    delete indexRouteWithoutPath.path; // delete path to avoid warning
   }
+
+/*  console.log('////////////////////////////////////////////');
+  console.log(_.findWhere(childRoutes, {name: "MembersOnly"}));
+  console.log('////////////////////////////////////////////');*/
 
   const AppRoutes = {
     path: '/',
     component: Components.App,
-    indexRoute,
+    indexRoute: indexRouteWithoutPath,
     childRoutes,
   };
 
   const options = {
     historyHook(req, res, newHistory) {
-      const { history } = getRenderContext();
+      let { history } = getRenderContext();
+      history = runCallbacks('router.server.history', history, { req, res, newHistory });
       return history;
     },
     wrapperHook(req, res, appGenerator) {
       const { apolloClient, store } = getRenderContext();
       store.reload();
       store.dispatch({ type: '@@nova/INIT' }) // the first dispatch will generate a newDispatch function from middleware
-      const app = appGenerator();
+      const app = runCallbacks('router.server.wrapper', appGenerator(), { req, res, store, apolloClient });
       return <ApolloProvider store={store} client={apolloClient}>{app}</ApolloProvider>;
     },
     preRender(req, res, app) {
+      runCallbacks('router.server.preRender', { req, res, app });
       return Promise.await(getDataFromTree(app));
     },
     dehydrateHook(req, res) {
-      const context = getRenderContext();
+      const context = runCallbacks('router.server.dehydrate', getRenderContext(), { req, res });
       return context.apolloClient.store.getState();
     },
     postRender(req, res) {
-      // req.css = styleSheet.sheet ? styleSheet.rules().map(rule => rule.cssText).join('\n') : '';
-      // const context = renderContext.get();
-      // context.css = req.css;
+      runCallbacks('router.server.postRender', { req, res });
     },
     htmlHook(req, res, dynamicHead, dynamicBody) {
-      const head = Helmet.rewind();
+      const head = runCallbacks('router.server.html', Helmet.rewind(), { req, res, dynamicHead, dynamicBody });
       return {
         dynamicHead: `${head.title}${head.meta}${head.link}${head.script}${dynamicHead}`,
         dynamicBody,

@@ -16,8 +16,6 @@ registerFragment(`
     groups
     services
     avatarUrl
-    profile
+    pageUrl
   }
 `);
-
-

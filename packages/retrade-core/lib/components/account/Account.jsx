@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
+import { withRouter } from 'react-router';
+import { Components, registerComponent, withCurrentUser } from 'meteor/vulcan:core';
 import styled from 'styled-components'
 import Header from '../common/layouts/header/Header.jsx'
 import BannerSmall from '../common/layouts/header/BannerSmall.jsx'
-import Profile from './Profile.jsx'
 import PartList from './PartList.jsx'
 import Billing from './Billing.jsx'
 import ComponentContainer from '../common/layouts/body/ComponentContainer.jsx'
@@ -26,11 +27,13 @@ const Scroll = styled.div`
 `;
 
 
-export default class Acccount extends React.Component {
+class Account extends React.Component {
 
     constructor(props) {
         super(props);
-
+        /*if(!props.currentUser) {
+            props.router.push('/login');
+        }*/
     }
 
 
@@ -46,12 +49,12 @@ export default class Acccount extends React.Component {
                     <Scroll className="flex-column align-center full-width full-height">
                         <div className="flex-row">
                             <div className="flex-column">
-                                <Profile/>
+                                <Components.Profile />
 
                             </div>
 
                             <div className="flex-column">
-                                <PartList/>
+                                <Components.PartList user={this.props.currentUser} terms={{limit: 1}} />
 
                                 <Billing/>
                             </div>
@@ -66,3 +69,6 @@ export default class Acccount extends React.Component {
         )
     }
 }
+
+registerComponent('Account', Account, withCurrentUser);
+export default withCurrentUser(Account)

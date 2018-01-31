@@ -19,6 +19,7 @@ export const addRoute = (routeOrRouteArray, parentRouteName) => {
   // be sure to have an array of routes to manipulate
   const addedRoutes = Array.isArray(routeOrRouteArray) ? routeOrRouteArray : [routeOrRouteArray];
 
+
   // if there is a value for parentRouteName you are adding this route as new child
   if (parentRouteName) {
 
@@ -30,8 +31,7 @@ export const addRoute = (routeOrRouteArray, parentRouteName) => {
     addedRoutes.map(({name, path, ...properties}) => {
 
       // check if there is already a route registered to this path
-      // note: destructure in order to get the first item of the array, as _.filter returns an array
-      const [routeWithSamePath] = _.filter(RoutesTable, route => route.path === path);
+      const routeWithSamePath = _.findWhere(RoutesTable, { path });
 
       if (routeWithSamePath) {
         // delete the route registered with same path
@@ -46,6 +46,18 @@ export const addRoute = (routeOrRouteArray, parentRouteName) => {
       };
 
     });
+  }
+};
+
+export const extendRoute = (routeName, routeProps) => {
+
+  const route = _.findWhere(RoutesTable, {name: routeName});
+
+  if (route) {
+    RoutesTable[route.name] = {
+      ...route,
+      ...routeProps
+    };
   }
 };
 

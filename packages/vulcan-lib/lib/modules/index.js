@@ -5,7 +5,7 @@
 import './deep.js';
 import './deep_extend.js';
 // import './intl_polyfill.js';
-// import './login.js';
+// import './graphql.js';
 import './icons.js';
 import './mongo_redux.js';
 
@@ -23,4 +23,6 @@ export * from './fragments.js';
 export * from './apollo.js';
 export * from './dynamic_loader.js';
 export * from './admin.js';
+export * from './fragment_matcher.js';
+export * from './debug.js';
 // export * from './resolvers.js';

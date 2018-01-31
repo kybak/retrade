@@ -70,6 +70,9 @@ export default class SearchForm extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            search: ""
+        }
     }
 
     componentWillReceiveProps(n) {
@@ -87,11 +90,11 @@ export default class SearchForm extends React.Component {
                         <i className="fa fa-search" aria-hidden="true"></i>
                     </IconContainer>
 
-                    <Input style={{paddingLeft: "50px"}} placeholder="Search by component (eg. HOLDER SZ-2591 29MM)"/>
+                    <Input style={{paddingLeft: "50px"}} placeholder="Search by component (eg. HOLDER SZ-2591 29MM)" onChange={e=>this.setState({search: e.target.value})}/>
 
                     <Go className="flex-column align-center justify-center"
                         type="submit"
-                        onClick={(e)=> this.props.submit(e)}>GO</Go>
+                        onClick={(e)=> this.props.submit(e, this.state.search)}>GO</Go>
 
                 </ParentContainer>
             </form>

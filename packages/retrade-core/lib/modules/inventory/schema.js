@@ -14,7 +14,7 @@ const schema = {
   _id: {
     type: String,
     optional: true,
-    viewableBy: ['guests'],
+    viewableBy: ['admin'],
   },
   createdAt: {
     type: Date,
@@ -24,47 +24,85 @@ const schema = {
       return new Date();
     }
   },
-  userId: {
+  itemNumber: {
+    label: 'Item Number',
     type: String,
-    optional: true,
-    viewableBy: ['guests'],
-    resolveAs: {
-      fieldName: 'user',
-      type: 'User',
-      resolver: (movie, args, context) => {
-        return context.Users.findOne({ _id: movie.userId }, { fields: context.Users.getViewableFields(context.currentUser, context.Users) });
-      },
-      addOriginalField: true
-    }
+    optional: false,
+    viewableBy: ['members'],
+    insertableBy: ['members'],
+    editableBy: ['members'],
+    searchable: true
   },
-
-  // custom properties
-
-  name: {
-    label: 'Name',
+  itemName: {
+    label: 'Item Name',
+    type: String,
+    optional: false,
+    viewableBy: ['members'],
+    insertableBy: ['members'],
+    editableBy: ['members'],
+    searchable: true
+  },
+  accountCode: {
+    label: 'Account Code',
+    type: String,
+    optional: false,
+    viewableBy: ['members'],
+    insertableBy: ['members'],
+    editableBy: ['members'],
+    searchable: true
+  },
+  customerRelation: {
+    label: 'Customer Relation',
     type: String,
     optional: true,
-    viewableBy: ['guests'],
+    viewableBy: ['members'],
+    insertableBy: ['members'],
+    editableBy: ['members'],
+    searchable: true
+  },
+  externalItemNumber: {
+    label: 'External Item Number',
+    type: String,
+    optional: true,
+    viewableBy: ['members'],
+    insertableBy: ['members'],
+    editableBy: ['members'],
+    searchable: true
+  },
+  mfm: {
+    label: 'MFM',
+    type: String,
+    optional: true,
+    viewableBy: ['members'],
+    insertableBy: ['members'],
+    editableBy: ['members'],
+    searchable: true
+  },
+  info: {
+    label: 'Info',
+    type: String,
+    optional: true,
+    viewableBy: ['members'],
     insertableBy: ['members'],
     editableBy: ['members'],
   },
-  year: {
-    label: 'Year',
+  multiple: {
+    label: 'Multiple',
     type: String,
     optional: true,
-    viewableBy: ['guests'],
+    viewableBy: ['members'],
     insertableBy: ['members'],
     editableBy: ['members'],
   },
-  review: {
-    label: 'Review',
+  owner: {
     type: String,
-    optional: true,
-    control: 'textarea',
-    viewableBy: ['guests'],
+    optional: false,
+    viewableBy: ['admin'],
     insertableBy: ['members'],
-    editableBy: ['members']
+    editableBy: ['admin'],
+    searchable: true
   },
+
 
 };
 

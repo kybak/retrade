@@ -10,7 +10,7 @@ const Bar = styled.div`
     position: absolute;
     top: 0;
     left:0;
-    z-index: 1;
+    z-index: 99;
     color: white;
    
 `;
@@ -71,7 +71,7 @@ class TopBar extends React.Component {
                     <Link to={`/cart`}>Cart</Link>
                 </NavItem>
                 <NavItem>
-                    <Link to={`/`}>Search</Link>
+                    <Link to={`/search`}>Search</Link>
                 </NavItem>
                 <NavItem>
                     <a href="">Add</a>

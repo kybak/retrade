@@ -1,8 +1,8 @@
 import React from 'react';
+import {withList, registerComponent} from 'meteor/vulcan:core';
 import styled from 'styled-components'
 import ComponentContainer from '../common/layouts/body/ComponentContainer.jsx'
 import EditUser from './modals/EditUser.jsx'
-import {withList} from 'meteor/vulcan:core';
 import {getFragment} from 'meteor/vulcan:lib';
 import Users from 'meteor/vulcan:users'
 import {withStyles} from 'material-ui/styles';
@@ -389,11 +389,14 @@ class AllUsers extends React.Component {
     }
 }
 
-const UserFragment = getFragment('UsersCurrent');
+// const UserFragment = getFragment('UsersCurrent');
 const listOptions = {
     collection: Users,
     queryName: 'usersListQuery',
-    fragment: UserFragment,
+    fragmentName: 'UsersCurrent',
 };
 
-export default withStyles(styles)(withList(listOptions)(AllUsers));
+registerComponent('AllUsers', AllUsers, [withStyles, styles], [withList, listOptions]);
+
+
+// export default withStyles(styles)(withList(listOptions)(AllUsers));

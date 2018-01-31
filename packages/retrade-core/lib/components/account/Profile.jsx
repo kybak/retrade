@@ -1,5 +1,6 @@
 import React from 'react';
-import {withCurrentUser, withEdit} from 'meteor/vulcan:core'
+import { withRouter } from 'react-router';
+import {withCurrentUser, withEdit, registerComponent} from 'meteor/vulcan:core'
 import {getFragment, apolloClient} from 'meteor/vulcan:lib';
 import Users from 'meteor/vulcan:users'
 import styled from 'styled-components'
@@ -30,6 +31,8 @@ class Profile extends React.Component {
 
     constructor(props) {
         super(props);
+
+
         let user = props.currentUser;
 
         this.state = {
@@ -112,7 +115,7 @@ class Profile extends React.Component {
     render() {
         return (
             <ProfileContainer className="flex-column">
-                <AlertContainer ref={a => this.msg = a}/>
+                {/*<AlertContainer ref={a => this.msg = a}/>*/}
 
 
                 <div className="flex-row justify-space-between align-center full-width">
@@ -245,10 +248,13 @@ class Profile extends React.Component {
 }
 
 
-const UserFragment = getFragment('UsersCurrent');
+// const UserFragment = getFragment('UsersCurrent');
 const mutationOptions = {
     collection: Users,
-    fragment: UserFragment
+    fragmentName: 'UsersCurrent'
 };
 
-export default withEdit(mutationOptions)(withCurrentUser(Profile))
+
+registerComponent('Profile', Profile, withRouter, withCurrentUser, [withEdit, mutationOptions]);
+
+// export default withEdit(mutationOptions)(withCurrentUser(Profile))

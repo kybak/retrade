@@ -10,12 +10,14 @@ registerFragment(`
   fragment InventoryItemFragment on Inventory {
     _id
     createdAt
-    userId
-    user {
-      displayName
-    }
-    name
-    year
-    review
+    owner
+    itemNumber
+    itemName
+    accountCode
+    customerRelation
+    externalItemNumber
+    mfm
+    info
+    multiple
   }
 `);

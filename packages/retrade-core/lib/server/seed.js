@@ -25,7 +25,9 @@ Meteor.startup(function () {
   // console.log(Meteor.default_server.method_handlers.changePassword.toString());
   // addGraphQLResolvers(...Resolvers());
 
-
+    const users = Users.find().fetch();
+    // users.forEach(user=>Meteor.users.remove({_id: user._id}));
+console.log(users);
   if (Users.find().fetch().length === 0) {
     Accounts.createUser({
       username: 'Admin',

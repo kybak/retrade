@@ -10,9 +10,9 @@ Package.onUse(function (api) {
     'vulcan:core',
 
     // vulcan packages
+    'vulcan:users',
     'vulcan:forms',
     'vulcan:accounts',
-    'vulcan:users',
 
   ]);
 

@@ -1,9 +1,9 @@
 import React from 'react';
+import {withDocument, withEdit, registerComponent} from 'meteor/vulcan:core';
 import styled from 'styled-components'
 import ComponentContainer from '../../common/layouts/body/ComponentContainer.jsx'
 import Header from '../../common/layouts/header/Header.jsx'
 import {ButtonPrimary} from '../../common/presentational-components/buttons/ButtonPrimary.js'
-import {withDocument, withEdit} from 'meteor/vulcan:core';
 import Users from 'meteor/vulcan:users'
 import {getFragment} from 'meteor/vulcan:lib';
 import AlertContainer from 'react-alert'
@@ -188,18 +188,19 @@ class EditUser extends React.Component {
     }
 }
 
-const UserFragment = getFragment('UsersCurrent');
+// const UserFragment = getFragment('UsersCurrent');
 const listOptions = {
     collection: Users,
     queryName: 'singleUserQuery',
-    fragment: UserFragment,
+    fragmentName: 'UsersCurrent',
 };
 
 const mutationOptions = {
     collection: Users,
-    fragment: UserFragment
+    fragmentName: 'UsersCurrent'
 };
 
-const withUser = withDocument(listOptions)(EditUser);
+// const withUser = withDocument(listOptions)(EditUser);
+registerComponent('EditUser', EditUser, [withDocument, listOptions], [withEdit, mutationOptions]);
 
-export default withEdit(mutationOptions)(withUser)
+// export default withEdit(mutationOptions)(withUser)

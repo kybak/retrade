@@ -1,17 +1,17 @@
 Package.describe({
   name: 'vulcan:lib',
   summary: 'Vulcan libraries.',
-  version: '1.6.0',
+  version: '1.8.2',
   git: "https://github.com/VulcanJS/Vulcan.git"
 });
 
 Package.onUse(function (api) {
 
-  api.versionsFrom(['METEOR@1.0']);
+  api.versionsFrom('METEOR@1.6');
 
   var packages = [
 
-    'buffer', // see https://github.com/meteor/meteor/issues/8645
+    'buffer@0.0.0', // see https://github.com/meteor/meteor/issues/8645
 
     // Meteor packages
 
@@ -25,6 +25,7 @@ Package.onUse(function (api) {
     'check',
     'http',
     'email',
+    'random',
     'ecmascript',
     'service-configuration',
     'shell-server',
