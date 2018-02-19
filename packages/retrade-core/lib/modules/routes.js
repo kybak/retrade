@@ -25,7 +25,7 @@ registerComponent('MainLayout', MainLayout);
 
 addRoute({ name: 'app', path: '/', componentName: "App" });
 addRoute({ name: 'search', path: '/search', componentName: "Search", layoutName: "MainLayout" });
-addRoute({ name: 'cart', path: '/cart', component: Cart, layoutName: "MainLayout"});
+addRoute({ name: 'cart', path: '/cart', componentName: "Cart", layoutName: "MainLayout"});
 addRoute({ name: 'login', path: '/login', componentName: 'Login', layoutName: "MainLayout"});
 addRoute({ name: 'signup', path: '/signup', component: Signup, layoutName: "MainLayout"});
 addRoute({ name: 'billing', path: '/billing', component: Billing, layoutName: "MainLayout"});

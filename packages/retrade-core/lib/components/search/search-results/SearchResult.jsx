@@ -11,6 +11,7 @@ import ExpansionPanel, {
 } from 'material-ui/ExpansionPanel';
 import Typography from 'material-ui/Typography';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
+import withCart from '../../../containers/withCart';
 
 const FlipContainer = styled.div`
   position: relative;
@@ -114,17 +115,25 @@ const AddButton = styled.button`
   }
 `;
 
+const Input = styled.input`
+    border: thin solid lightgray;
+    width: 100px;
+    padding: 5px;
+    text-align: center;
+    ${borderRadius("5px")};
+`;
+
 
 class SearchResult extends React.Component {
 
     constructor(props) {
         super(props);
-
         this.flip = this.flip.bind(this);
         this.add = this.add.bind(this);
         this.state = {
             flipped: "rotateY(0deg)",
-            added: "0px"
+            added: "0px",
+            qty: 0
         }
     }
 
@@ -133,7 +142,12 @@ class SearchResult extends React.Component {
     }
 
     add(e) {
-        this.setState({added: "95px"})
+        if (this.state.qty) {
+            let component = {...this.props.component, qty: this.state.qty};
+            this.props.updateCart(component);
+        } else {
+            alert('Please add a quantity')
+        }
     }
 
 
@@ -145,7 +159,7 @@ class SearchResult extends React.Component {
     render() {
         const {itemName, itemNumber, accountCode, customerRelation, externalItemNumber, mfm} = this.props.component;
         return (
-            <ExpansionPanel style={{width:"800px"}}>
+            <ExpansionPanel style={{width: "800px"}}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
                     <Typography>{itemName}</Typography>
                 </ExpansionPanelSummary>
@@ -160,6 +174,8 @@ class SearchResult extends React.Component {
                         </Typography>
 
                         <div className="flex-row full-width justify-end">
+                            <Input type="number" value={this.state.qty} className="space-right"
+                                   onChange={(e) => this.setState({qty: e.target.value})}/>
                             <AddButton onClick={this.add}>Add</AddButton>
                         </div>
                     </div>
@@ -179,7 +195,7 @@ class SearchResult extends React.Component {
  friends: React.PropTypes.number
  };*/
 
-registerComponent('SearchResult', SearchResult);
+registerComponent('SearchResult', withCart(SearchResult));
 /*<FlipContainer key={itemNumber}>
                 <Flipper flipped={this.state.flipped}>
 

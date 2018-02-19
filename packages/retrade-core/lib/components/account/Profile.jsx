@@ -1,5 +1,5 @@
 import React from 'react';
-import { withRouter } from 'react-router';
+import {withRouter} from 'react-router';
 import {withCurrentUser, withEdit, registerComponent} from 'meteor/vulcan:core'
 import {getFragment, apolloClient} from 'meteor/vulcan:lib';
 import Users from 'meteor/vulcan:users'
@@ -35,6 +35,7 @@ class Profile extends React.Component {
 
         let user = props.currentUser;
 
+
         this.state = {
             checked: (props.profile && (user.profile.deliveryAddress === user.profile.billingAddress)),
             notEditing: true,
@@ -43,23 +44,17 @@ class Profile extends React.Component {
             user: {
                 username: user.username,
                 email: user.email,
-                profile: {
-                    fullName: user.profile ? user.profile.fullName : "",
-                    country: user.profile ? user.profile.country : "",
-                    billingAddress: user.profile ? user.profile.billingAddress : "",
-                    deliveryAddress: user.profile ? user.profile.deliveryAddress : "",
-                }
+                fullName: user.fullName,
+                country: user.country,
+                billingAddress: user.billingAddress,
+                deliveryAddress: user.deliveryAddress
             }
         }
     }
 
     handleChange = name => event => {
         let user = {...this.state.user};
-        if (name === "username" || name === "email") {
-            user[name] = event.target.value;
-        } else {
-            user.profile[name] = event.target.value;
-        }
+        user[name] = event.target.value;
         this.setState({user});
     };
 
@@ -78,7 +73,7 @@ class Profile extends React.Component {
                 documentId: this.props.currentUser._id,
                 set: this.state.user,
                 unset: {}
-            }).then((res)=>console.log(res));
+            }).then((res) => console.log(res));
             this.setState({notEditing: true})
         }
     };
@@ -149,7 +144,7 @@ class Profile extends React.Component {
                     style={{width: "200px"}}
                     id="full-name"
                     label="Full Name"
-                    value={this.state.user.profile.fullName}
+                    value={this.state.user.fullName}
                     onChange={this.handleChange('fullName')}
                     margin="normal"
                     disabled={this.state.notEditing}
@@ -169,7 +164,7 @@ class Profile extends React.Component {
                     style={{width: "200px"}}
                     id="country"
                     label="Country"
-                    value={this.state.user.profile.country}
+                    value={this.state.user.country}
                     onChange={this.handleChange('country')}
                     margin="normal"
                     disabled={this.state.notEditing}
@@ -179,7 +174,7 @@ class Profile extends React.Component {
                     style={{width: "200px"}}
                     id="billing-address"
                     label="Billing Address"
-                    value={this.state.user.profile.billingAddress}
+                    value={this.state.user.billingAddress}
                     onChange={this.handleChange('billingAddress')}
                     margin="normal"
                     disabled={this.state.notEditing}
@@ -190,7 +185,7 @@ class Profile extends React.Component {
                         style={{width: "200px"}}
                         id="delivery-address"
                         label="Delivery Address"
-                        value={this.state.user.profile.deliveryAddress}
+                        value={this.state.user.deliveryAddress}
                         onChange={this.handleChange('deliveryAddress')}
                         margin="normal"
                         disabled={this.state.notEditing}

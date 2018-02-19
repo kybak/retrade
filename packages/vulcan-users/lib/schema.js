@@ -3,11 +3,11 @@ import Users from './collection.js';
 import { Utils } from 'meteor/vulcan:lib'; // import from vulcan:lib because vulcan:core isn't loaded yet
 
 ///////////////////////////////////////
-// Order for the Schema is as follows. Change as you see fit: 
-// 00. 
+// Order for the Schema is as follows. Change as you see fit:
+// 00.
 // 10. Display Name
 // 20. Email
-// 30. Bio 
+// 30. Bio
 // 40. Slug
 // 50. Website
 // 60. Twitter username
@@ -30,6 +30,7 @@ const ownsOrIsAdmin = (user, document) => {
  * @summary Users schema
  * @type {Object}
  */
+
 const schema = {
   _id: {
     type: String,
@@ -41,16 +42,17 @@ const schema = {
     optional: true,
     viewableBy: ['guests'],
     insertableBy: ['guests'],
+    editableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id),
     onInsert: user => {
       if (user.services && user.services.twitter && user.services.twitter.screenName) {
         return user.services.twitter.screenName;
       }
-    },
-    searchable: true
+    }
   },
   emails: {
     type: Array,
     optional: true,
+    editableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id),
   },
   'emails.$': {
     type: Object,
@@ -88,12 +90,8 @@ const schema = {
       return (!user.isDummy && realUsersCount === 0) ? true : false;
     }
   },
-  profile: {
-    type: Object,
-    optional: true,
-    blackbox: true,
-    insertableBy: ['guests'],
-  },
+
+
   // // telescope-specific data, kept for backward compatibility and migration purposes
   // telescope: {
   //   type: Object,
@@ -105,6 +103,31 @@ const schema = {
     optional: true,
     blackbox: true,
   },
+
+  fullName: {
+    type: String,
+    optional: true,
+    editableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id),
+    viewableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id)
+  },
+  billingAddress: {
+    type: String,
+    optional: true,
+    editableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id),
+    viewableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id)
+  },
+  deliveryAddress: {
+    type: String,
+    optional: true,
+    editableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id),
+    viewableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id)
+  },
+  country: {
+    type: String,
+    optional: true,
+    editableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id),
+    viewableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id)
+  },
   /**
     The name displayed throughout the app. Can contain spaces and special characters, doesn't need to be unique
   */
@@ -113,20 +136,20 @@ const schema = {
     optional: true,
     control: "text",
     insertableBy: ['members'],
-    editableBy: ['members'],
+    editableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id),
     viewableBy: ['guests'],
-    order: 10,
     onInsert: (user, options) => {
       const profileName = Utils.getNestedProperty(user, 'profile.name');
       const twitterName = Utils.getNestedProperty(user, 'services.twitter.screenName');
       const linkedinFirstName = Utils.getNestedProperty(user, 'services.linkedin.firstName');
+
       if (profileName) return profileName;
       if (twitterName) return twitterName;
       if (linkedinFirstName) return `${linkedinFirstName} ${Utils.getNestedProperty(user, 'services.linkedin.lastName')}`;
       if (user.username) return user.username;
       return undefined;
-    },
-    searchable: true
+
+    }
   },
   /**
     Bio (Markdown version)
@@ -151,9 +174,8 @@ const schema = {
     mustComplete: true,
     control: "text",
     insertableBy: ['guests'],
-    editableBy: ['members'],
+    editableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id),
     viewableBy: ownsOrIsAdmin,
-    order: 20,
     onInsert: (user) => {
       // look in a few places for the user email
       const meteorEmails = Utils.getNestedProperty(user, 'services.meteor-developer.emails');
@@ -168,8 +190,7 @@ const schema = {
       if (googleEmail) return googleEmail;
       if (linkedinEmail) return linkedinEmail;
       return undefined;
-    },
-    searchable: true
+    }
     // unique: true // note: find a way to fix duplicate accounts before enabling this
   },
   /**
@@ -312,7 +333,7 @@ const schema = {
       resolver: (user, args, context) => {
         return Users.getProfileUrl(user, true);
       },
-    }  
+    }
   }
 
 };

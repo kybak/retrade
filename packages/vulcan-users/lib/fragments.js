@@ -7,6 +7,7 @@ registerFragment(`
   fragment UsersCurrent on User {
     _id
     username
+    fullName
     createdAt
     isAdmin
     displayName
@@ -17,5 +18,8 @@ registerFragment(`
     services
     avatarUrl
     pageUrl
+    billingAddress
+    deliveryAddress
+    country
   }
 `);

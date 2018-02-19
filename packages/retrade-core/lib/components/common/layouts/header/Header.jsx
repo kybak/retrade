@@ -1,16 +1,17 @@
 import React from 'react';
 import {withCurrentUser} from 'meteor/vulcan:core'
-import { Link } from 'react-router';
+import {Link} from 'react-router';
 import styled from 'styled-components'
-import Menu, { MenuItem } from 'material-ui/Menu';
+import Menu, {MenuItem} from 'material-ui/Menu';
 import Button from 'material-ui/Button';
+import withCart from '../../../../containers/withCart';
 
 
 const Bar = styled.div`
     position: absolute;
     top: 0;
     left:0;
-    z-index: 99;
+    z-index: 1300;
     color: white;
    
 `;
@@ -32,11 +33,11 @@ const MenuItemHeader = styled.li`
 `;
 
 
+
 class TopBar extends React.Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             anchorEl: null,
             open: false,
@@ -44,22 +45,22 @@ class TopBar extends React.Component {
     }
 
     openMenu = event => {
-        this.setState({ open: true, anchorEl: event.currentTarget });
+        this.setState({open: true, anchorEl: event.currentTarget});
     };
 
     closeMenu = () => {
-        this.setState({ open: false });
+        this.setState({open: false});
     };
 
     logout = () => {
-      this.closeMenu();
-      Meteor.logout();
-      window.location = '/'
+        this.closeMenu();
+        Meteor.logout();
+        window.location = '/'
     };
 
 
     render() {
-        const user = this.props.currentUser;
+        const {currentUser} = this.props, {cart} = this.props.ui;
         return (
             <Bar className="flex-row justify-end align-center full-width">
 
@@ -68,7 +69,10 @@ class TopBar extends React.Component {
                     <b style={{fontFamily: 'Lulo Clean'}}><span style={{color: "#BADA55"}}>RE</span>TRADE</b>
                 </Logo>
                 <NavItem>
-                    <Link to={`/cart`}>Cart</Link>
+                    <div className="flex-row align-center">
+                        <b className="space-right">{cart.length}</b>
+                        <Link to={`/cart`}>Cart</Link>
+                    </div>
                 </NavItem>
                 <NavItem>
                     <Link to={`/search`}>Search</Link>
@@ -82,7 +86,7 @@ class TopBar extends React.Component {
                 <NavItem>
                     <Link to={`/login`}>Login</Link>
                 </NavItem>
-                {this.props.currentUser && (
+                {currentUser && (
                     <div className="flex-row justify-end align-center">
                         <NavItem>
                             <span>|</span>
@@ -95,7 +99,7 @@ class TopBar extends React.Component {
                                     aria-haspopup="true"
                                     onClick={this.openMenu}
                                 >
-                                    <span className="space-right">{user.username}</span>
+                                    <span className="space-right">{currentUser.username}</span>
                                     <i className="fa fa-caret-down" aria-hidden="true"></i>
                                 </Button>
                             </div>
@@ -107,7 +111,7 @@ class TopBar extends React.Component {
                                 open={this.state.open}
                                 onRequestClose={this.closeMenu}
                             >
-                                <MenuItemHeader><b>{user.username}</b></MenuItemHeader>
+                                <MenuItemHeader><b>{currentUser.username}</b></MenuItemHeader>
                                 <MenuItem onClick={this.closeMenu}>Orders</MenuItem>
                                 <Link to={`/account`}><MenuItem onClick={this.closeMenu}>My account</MenuItem></Link>
                                 <MenuItem onClick={this.logout}>Logout</MenuItem>
@@ -122,6 +126,6 @@ class TopBar extends React.Component {
     }
 }
 
-export default withCurrentUser(TopBar)
+export default withCart(withCurrentUser(TopBar));
 
 

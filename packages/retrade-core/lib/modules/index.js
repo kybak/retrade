@@ -7,6 +7,7 @@ import './routes.js';
 
 // Modules
 import './users/create-user/CreateUser.js'
+import './redux/updateCart.js'
 
 // Schemas
 import './users/user-schema.js'
@@ -22,4 +23,5 @@ import '../components/account/PartList.jsx'
 import '../components/account/PartListFull.jsx'
 import '../components/account/PartListTable.jsx'
 import '../components/account/Account.jsx'
+import '../components/cart/Cart.jsx'
 import './authentication/MembersOnly.jsx'

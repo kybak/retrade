@@ -11,6 +11,7 @@ const withCurrentUser = component => {
         currentUser {
               _id
     username
+    fullName
     createdAt
     isAdmin
     displayName
@@ -20,6 +21,9 @@ const withCurrentUser = component => {
     groups
     services
     avatarUrl
+    billingAddress
+    deliveryAddress
+    country
     pageUrl
         }
       }

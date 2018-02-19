@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components'
+import {withList, registerComponent} from "meteor/vulcan:core";
 import AlertContainer from 'react-alert'
 import Header from '../common/layouts/header/Header.jsx'
 import AddressModal from './modals/Address.jsx'
-import { borderRadius, boxShadow, transition, boxSizing, fontSmoothing } from '../../stylesheets/style.utils.js';
-import { ButtonPrimary } from "../common/presentational-components/buttons/ButtonPrimary";
-import { Quantity } from '../common/presentational-components/inputs/Quantity.js'
-import { Price } from '../common/presentational-components/Price.js'
+import {borderRadius, boxShadow, transition, boxSizing, fontSmoothing} from '../../stylesheets/style.utils.js';
+import {ButtonPrimary} from "../common/presentational-components/buttons/ButtonPrimary";
+import {Quantity} from '../common/presentational-components/inputs/Quantity.js'
+import {Price} from '../common/presentational-components/Price.js';
+import withCart from '../../containers/withCart';
 
 const Banner = styled.div`
     width:100%;
@@ -36,8 +38,12 @@ const CartItemBox = styled.div`
       ${boxShadow('1px', '1px', '10px', '0', 'rgba(0, 0, 0, 0.36)')};
 `;
 
+const Total = styled.div`
+    font-size: 30px;
+`;
 
-export default class Cart extends React.Component {
+
+class Cart extends React.Component {
 
     constructor(props) {
         super(props);
@@ -58,10 +64,10 @@ export default class Cart extends React.Component {
     };
 
     showAlert = () => {
-        this.msg.info('This page is under construction!', {
+        /*this.msg.info('This page is under construction!', {
             time: 30000,
             type: 'info',
-        })
+        })*/
     };
 
 
@@ -75,93 +81,88 @@ export default class Cart extends React.Component {
         this.showAlert()
     }
 
+    remove(id) {
+        this.props.removeCart(id);
+    }
+
+    getCartItems() {
+        return (
+            this.props.ui.cart.map(component => {
+                return (
+                    <CartItemBox key={component._id} className="flex-row">
+                        <div className="flex-column">
+                            <b>{component.itemName}</b>
+                            <Quantity value={component.qty}/>
+                        </div>
+
+                        <Price className="flex-column">
+                            <span>100 NKr</span>
+                        </Price>
+
+                        <div className="flex-column remove">
+                            <i style={{cursor: "pointer"}} className="fa fa-trash" aria-hidden="true"
+                               onClick={() => this.remove(component._id)}></i>
+                        </div>
+                    </CartItemBox>
+                )
+            })
+        )
+    }
+
     render() {
+        const {cart} = this.props.ui;
+
+        let cartItems = null;
+        if (cart.length > 0) {
+            cartItems = this.getCartItems()
+        } else {
+            cartItems = <h1>CART IS EMPTY</h1>
+        }
 
         return (
             <div className="flex-column align-center">
-                <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
+                {/*<AlertContainer ref={a => this.msg = a} {...this.alertOptions} />*/}
 
                 <Header/>
 
                 <Banner className="flex-column">
-                    <h1>CART</h1>
+                    <h1 style={{color: 'white'}}>CART</h1>
                 </Banner>
 
 
                 <CartContainer className="flex-column">
 
-                    <CartItemBox className="flex-row">
-                        <div className="flex-column">
-                            <b>DI SCHOTTKY MBRS340 FCS</b>
-                            <Quantity value="100"/>
-                        </div>
-
-                        <Price className="flex-column">
-                            <span>100 NKr</span>
-                        </Price>
-
-                        <div className="flex-column remove">
-                            <i className="fa fa-trash" aria-hidden="true"></i>
-                        </div>
-                    </CartItemBox>
-
-                    <CartItemBox className="flex-row">
-                        <div className="flex-column">
-                            <b>DI SCHOTTKY MBRS340 FCS</b>
-                            <Quantity value="100"/>
-                        </div>
-
-                        <Price className="flex-column">
-                            <span>100 NKr</span>
-                        </Price>
-
-                        <div className="flex-column remove">
-                            <i className="fa fa-trash" aria-hidden="true"></i>
-                        </div>
-                    </CartItemBox>
-
-                    <CartItemBox className="flex-row">
-                        <div className="flex-column">
-                            <b>DI SCHOTTKY MBRS340 FCS</b>
-                            <Quantity value="100"/>
-                        </div>
-
-                        <Price className="flex-column">
-                            <span>100 NKr</span>
-                        </Price>
-
-                        <div className="flex-column remove">
-                            <i className="fa fa-trash" aria-hidden="true"></i>
-                        </div>
-                    </CartItemBox>
+                    {cartItems}
 
                 </CartContainer>
 
-                <div className="flex-row" style={{margin: "20px 0"}}>
-
-                    <div className="flex-row check-card selected">USE CARD ENDING IN 7931</div>
-                    <div className="flex-row check-card">ENTER NEW CARD</div>
-                </div>
-
-
-                <div className="flex-column total">
+                {cart.length > 0 &&
+                <Total className="flex-column align-center justify-center">
                     <b>Total</b>
                     <span>300 000 NKr</span>
 
                     <ButtonPrimary onClick={this.handleClick}>CHECKOUT</ButtonPrimary>
 
+                </Total>}
+
+                {/*   <div className="flex-row" style={{margin: "20px 0"}}>
+
+                    <div className="flex-row check-card selected">USE CARD ENDING IN 7931</div>
+                    <div className="flex-row check-card">ENTER NEW CARD</div>
                 </div>
+*/}
 
-
-                <div className="flex-row bottom-bar">©2017 ReTrade</div>
 
                 {this.state.modalOpen &&
-                    <AddressModal/>
+                <AddressModal/>
                 }
             </div>
         )
     }
 }
+
+registerComponent('Cart', withCart(Cart));
+
 
 /*
  App.propTypes = {

@@ -1,9 +1,10 @@
 import React from 'react';
-import { ModalContainer } from '../../common/layouts/modal/ModalLayout.js'
-import { ButtonPrimary } from '../../common/presentational-components/buttons/ButtonPrimary.js'
-import styled, { keyframes } from 'styled-components'
-import { borderRadius, boxShadow, animationFillMode } from '../../../stylesheets/style.utils.js';
-
+import {withCurrentUser} from 'meteor/vulcan:core';
+import {ModalContainer} from '../../common/layouts/modal/ModalLayout.js'
+import {ButtonPrimary} from '../../common/presentational-components/buttons/ButtonPrimary.js'
+import styled, {keyframes} from 'styled-components'
+import {borderRadius, boxShadow, animationFillMode} from '../../../stylesheets/style.utils.js';
+import TextField from 'material-ui/TextField';
 
 const popOut = keyframes `
     0% {
@@ -57,53 +58,74 @@ const AddressForm = styled.form`
     margin-top:20px;
 `;
 
-export default class AddressModal extends React.Component {
+class AddressModal extends React.Component {
 
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
+        // this.handleClick = this.handleClick.bind(this);
 
-    // this.handleClick = this.handleClick.bind(this);
-    this.state = {
-      displayContents: false
+        this.state = {
+            displayContents: false,
+            address: props.currentUser.deliveryAddress,
+            country: props.currentUser.country
+        }
+
     }
-
-  }
 
     componentDidMount() {
-      setTimeout(()=> {
-        this.setState({displayContents: true})
-      }, 300)
+        setTimeout(() => {
+            this.setState({displayContents: true})
+        }, 300)
     }
+
+    handleChange = name => event => {
+        this.setState({
+            [name]: event.target.value,
+        });
+    };
 
     getModalContent() {
-      return (
-        <div className="flex-column justify-center align-center">
-          <h3>Enter a new address</h3>
+        return (
+            <div className="flex-column justify-center align-center">
+                <h3>Confirm your address</h3>
 
-          <AddressForm className="flex-column justify-space-between">
+                <AddressForm className="flex-column justify-space-between">
 
-            <input placeholder="Street"/>
-            <input placeholder="Zip Code"/>
-            <input placeholder="Country"/>
-            <input placeholder="City"/>
+                    <TextField
+                        id="name"
+                        label="Address"
+                        value={this.state.address}
+                        onChange={this.handleChange('address')}
+                        margin="normal"
+                    />
 
-            <ButtonPrimary>FINALIZE ORDER</ButtonPrimary>
-          </AddressForm>
-        </div>
-      )
+                    <TextField
+                        id="name"
+                        label="Country"
+                        value={this.state.country}
+                        onChange={this.handleChange('country')}
+                        margin="normal"
+                    />
+
+                    <ButtonPrimary className="space-top" type="submit">FINALIZE ORDER</ButtonPrimary>
+                </AddressForm>
+            </div>
+        )
     }
 
 
-  render() {
-    return (
-      <ModalContainer>
-          <Modal>
-              {this.state.displayContents &&
-                  this.getModalContent()
-              }
+    render() {
+        return (
+            <ModalContainer>
+                <Modal>
+                    {this.state.displayContents &&
+                    this.getModalContent()
+                    }
 
-          </Modal>
-      </ModalContainer>
-    )
-  }
+                </Modal>
+            </ModalContainer>
+        )
+    }
 }
+
+export default withCurrentUser(AddressModal)

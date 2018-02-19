@@ -18,7 +18,7 @@ const SearchSection = styled.div.attrs({
     align-items: center;
     z-index: 0;
     padding-top: 40px;
-    z-index: 1;
+    z-index: 1200;
     ${transition("all", ".5s")};
     
     

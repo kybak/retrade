@@ -76,27 +76,7 @@ class PartList extends React.Component {
             header: true,
             complete: function (results) {
 
-                addComponentA(props, results)
-
-                /*_.each(results.data, (d) => {
-                    const document = {
-                        owner: props.user._id,
-                        itemNumber: d["Item number"],
-                        itemName: d["Item name"],
-                        accountCode: d["Account code"],
-                        customerRelation: d["Customer relation"],
-                        externalItemNumber: d["External item number"],
-                        mfm: d["MFM"],
-                        info: d["Info"],
-                        multiple: d["Multiple"]
-                    };
-
-                    props.newMutation({
-                        document: document
-                    }).then(res=> console.log(res)).catch(err=>console.log(err));
-                });*/
-
-
+                addComponentA(props, results);
             }
         });
     };
@@ -154,6 +134,11 @@ const listOptions = {
 registerComponent("PartList", PartList, [withNew, mutationOptions], [withList, listOptions]);
 
 // export default withNew(mutationOptions)(PartList)
+
+
+`
+    Cycling between two functions so that mutations are called in turn.
+`;
 
 function addComponentA(props, results) {
 
