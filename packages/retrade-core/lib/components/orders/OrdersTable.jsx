@@ -256,7 +256,7 @@ class EnhancedTable extends React.Component {
             order: 'asc',
             orderBy: 'buyer',
             selected: [],
-            data: props.results,
+            data: props.results ? props.results : [],
             page: 0,
             rowsPerPage: 5,
             showModal: false,
@@ -324,7 +324,6 @@ class EnhancedTable extends React.Component {
         }
 
         this.setState({selected: newSelected});
-console.log(this.state.selected);
     };
 
     handleChangePage = (event, page) => {

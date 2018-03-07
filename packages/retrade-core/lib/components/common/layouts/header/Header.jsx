@@ -105,7 +105,7 @@ class TopBar extends React.Component {
                                 id="simple-menu"
                                 anchorEl={this.state.anchorEl}
                                 open={this.state.open}
-                                onRequestClose={this.closeMenu}
+                                onClose={this.closeMenu}
                             >
                                 <MenuItemHeader><b>{currentUser.username}</b></MenuItemHeader>
                                 <Link to={`/orders`}><MenuItem onClick={this.closeMenu}>Orders</MenuItem></Link>
