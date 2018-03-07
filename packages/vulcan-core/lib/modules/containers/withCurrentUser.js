@@ -25,6 +25,8 @@ const withCurrentUser = component => {
     deliveryAddress
     country
     pageUrl
+    isSeller
+    isBuyer
         }
       }
     `, {

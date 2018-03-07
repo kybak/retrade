@@ -206,6 +206,20 @@ const schema = {
       }
     }
   },
+  isSeller: {
+    type: Boolean,
+    optional: true,
+    insertableBy:(user, doc)=> ownsOrIsAdmin(user._id, doc._id),
+    editableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id),
+    viewableBy: ["members"]
+  },
+  isBuyer: {
+    type: Boolean,
+    optional: true,
+    insertableBy:(user, doc)=> ownsOrIsAdmin(user._id, doc._id),
+    editableBy: (user, doc)=> ownsOrIsAdmin(user._id, doc._id),
+    viewableBy: ["members"]
+  },
   avatarUrl: {
     type: String,
     optional: true,

@@ -1,5 +1,4 @@
 import React from 'react';
-import {withCurrentUser} from 'meteor/vulcan:core';
 import {ModalContainer} from '../../common/layouts/modal/ModalLayout.js'
 import {ButtonPrimary} from '../../common/presentational-components/buttons/ButtonPrimary.js'
 import styled, {keyframes} from 'styled-components'
@@ -62,12 +61,12 @@ class AddressModal extends React.Component {
 
     constructor(props) {
         super(props);
-        // this.handleClick = this.handleClick.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
 
         this.state = {
             displayContents: false,
-            address: props.currentUser.deliveryAddress,
-            country: props.currentUser.country
+            address: props.user.deliveryAddress,
+            country: props.user.country
         }
 
     }
@@ -84,12 +83,18 @@ class AddressModal extends React.Component {
         });
     };
 
+    handleSubmit(e) {
+        e.preventDefault();
+
+        this.props.close(true);
+    }
+
     getModalContent() {
         return (
             <div className="flex-column justify-center align-center">
                 <h3>Confirm your address</h3>
 
-                <AddressForm className="flex-column justify-space-between">
+                <AddressForm onSubmit={this.handleSubmit} className="flex-column justify-space-between">
 
                     <TextField
                         id="name"
@@ -128,4 +133,4 @@ class AddressModal extends React.Component {
     }
 }
 
-export default withCurrentUser(AddressModal)
+export default AddressModal

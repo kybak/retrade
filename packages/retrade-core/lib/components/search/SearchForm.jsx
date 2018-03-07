@@ -76,7 +76,7 @@ export default class SearchForm extends React.Component {
     }
 
     componentWillReceiveProps(n) {
-        console.log(n);
+
     }
 
     render() {

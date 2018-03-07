@@ -23,7 +23,7 @@ VulcanEmail.addTemplates = templates => {
 };
 
 VulcanEmail.getTemplate = templateName => Handlebars.compile(
-  VulcanEmail.templates[templateName], 
+  VulcanEmail.templates[templateName],
   { noEscape: true, strict: true}
 );
 
@@ -31,24 +31,23 @@ VulcanEmail.buildTemplate = (htmlContent, optionalProperties = {}) => {
 
   const emailProperties = {
     secondaryColor: getSetting('secondaryColor', '#444444'),
-    accentColor: getSetting('accentColor', '#DD3416'),
-    siteName: getSetting('title', 'My App'),
+    accentColor: getSetting('accentColor', 'white'),
+    siteName: getSetting('title', 'ReTrade'),
     tagline: getSetting('tagline'),
-    siteUrl: Utils.getSiteUrl(),
+    siteUrl: "https://rt-electronics.com",
     body: htmlContent,
     unsubscribe: '',
-    accountLink: Utils.getSiteUrl()+'account',
-    footer: getSetting('emailFooter'),
-    logoUrl: getSetting('logoUrl'),
-    logoHeight: getSetting('logoHeight'),
-    logoWidth: getSetting('logoWidth'),
+    accountLink: "https://rt-electronics.com/account",
+    footer: "",
+    logoUrl: null,
+    logoHeight: null,
+    logoWidth: null,
     ...optionalProperties
   };
 
   const emailHTML = VulcanEmail.getTemplate("wrapper")(emailProperties);
   const inlinedHTML = Juice(emailHTML, {preserveMediaQueries: true});
   const doctype = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">'
-
   return doctype+inlinedHTML;
 };
 
@@ -58,13 +57,13 @@ VulcanEmail.generateTextVersion = html => {
   });
 }
 
-VulcanEmail.send = (to, subject, html, text) => {
+VulcanEmail.send = (to, subject, html, text, attachments) => {
 
   // TODO: limit who can send emails
   // TODO: fix this error: Error: getaddrinfo ENOTFOUND
 
-  const from = getSetting('defaultEmail', 'noreply@example.com');
-  const siteName = getSetting('title', 'Vulcan');
+  const from = getSetting('defaultEmail', 'tokylebaker@gmail.com');
+  const siteName = getSetting('title', 'ReTrade');
   subject = '['+siteName+'] '+subject;
 
   if (typeof text === 'undefined'){
@@ -72,15 +71,17 @@ VulcanEmail.send = (to, subject, html, text) => {
     text = VulcanEmail.generateTextVersion(html);
   }
 
+
   const email = {
     from: from,
     to: to,
     subject: subject,
     text: text,
-    html: html
+    html: html,
+    attachments: attachments
   };
-  
-  if (process.env.NODE_ENV === 'production' || getSetting('enableDevelopmentEmails', false)) {
+
+  if (process.env.NODE_ENV === 'production' || getSetting('enableDevelopmentEmails', true)) {
 
     console.log('//////// sending email…'); // eslint-disable-line
     console.log('from: '+from); // eslint-disable-line
@@ -119,16 +120,14 @@ VulcanEmail.build = async ({ emailName, variables }) => {
   const data = email.data ? {...result.data, ...email.data(variables)} : result.data;
 
   const subject = typeof email.subject === 'function' ? email.subject(data) : email.subject;
-  
   const html = VulcanEmail.buildTemplate(VulcanEmail.getTemplate(email.template)(data), data);
 
   return { data, subject, html };
 }
 
-VulcanEmail.buildAndSend = async ({ to, emailName, variables }) => {
-
+VulcanEmail.buildAndSend = async ({ to, emailName, variables, attachments }) => {
   const email = await VulcanEmail.build({ to, emailName, variables });
-  return VulcanEmail.send(to, email.subject, email.html);
+  return VulcanEmail.send(to, email.subject, email.html, '', attachments);
 
 };
 

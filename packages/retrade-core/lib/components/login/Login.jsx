@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Components, registerComponent } from 'meteor/vulcan:core';
+import {withRouter} from 'react-router';
 import styled from 'styled-components'
 import {boxShadow, borderRadius, transition} from '../../stylesheets/style.utils.js';
 import Header from '../common/layouts/header/Header.jsx'
@@ -186,14 +187,14 @@ class Login extends PureComponent {
     handleSubmit(ev) {
         ev.preventDefault();
 
-        Meteor.loginWithPassword(this.state.email, this.state.password, (err, res)=> {
+        Meteor.loginWithPassword(this.state.email, this.state.password, (err)=> {
             if (!err) {
                 /*this.msg.success('Login successful. ID is: ' + Meteor.userId(), {
                     time: 30000,
                     type: 'success',
                 });*/
 
-                window.location='/account'
+                this.props.router.push('/account');
             } else {
                 /*this.msg.error(err.message, {
                     time: 30000,
@@ -278,7 +279,7 @@ class Login extends PureComponent {
     }
 }
 
-registerComponent('Login', Login);
+registerComponent('Login', Login, withRouter);
 
 /*
  App.propTypes = {

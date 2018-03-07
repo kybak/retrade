@@ -2,7 +2,9 @@ import React, { PureComponent } from 'react';
 import { withRouter } from 'react-router';
 import { Components, registerComponent, withCurrentUser } from 'meteor/vulcan:core';
 import styled from 'styled-components'
+import Dialog, { DialogTitle } from 'material-ui/Dialog';
 import Header from '../common/layouts/header/Header.jsx'
+import SellerOrBuyer from './modals/SellerOrBuyer.jsx'
 import BannerSmall from '../common/layouts/header/BannerSmall.jsx'
 import PartList from './PartList.jsx'
 import Billing from './Billing.jsx'
@@ -27,14 +29,24 @@ const Scroll = styled.div`
 `;
 
 
-class Account extends React.Component {
+class AccountBuyer extends React.Component {
 
     constructor(props) {
         super(props);
         /*if(!props.currentUser) {
             props.router.push('/login');
         }*/
+        let modalOpen = false;
+        if (!props.currentUser.isBuyer && !props.currentUser.isSeller) modalOpen = true;
+
+        this.state = {
+            modalOpen: modalOpen
+        }
     }
+
+    handleRequestClose = value => {
+        this.setState({ modalOpen: false });
+    };
 
 
     render() {
@@ -49,12 +61,12 @@ class Account extends React.Component {
                     <Scroll className="flex-column align-center full-width full-height">
                         <div className="flex-row">
                             <div className="flex-column">
-                                <Components.Profile />
+                                <Components.Profile currentUser={this.props.currentUser}/>
 
                             </div>
 
                             <div className="flex-column">
-                                <Components.PartList user={this.props.currentUser} terms={{limit: 1}} />
+                                {/*<Components.PartList user={this.props.currentUser} terms={{limit: 1}} />*/}
 
                                 <Billing/>
                             </div>
@@ -65,10 +77,14 @@ class Account extends React.Component {
 
                 </AccountContainer>
 
+                <Dialog open={this.state.modalOpen}>
+                    <Components.SellerOrBuyer user={this.props.currentUser} close={()=> this.setState({modalOpen: false})} />
+                </Dialog>
+
             </ComponentContainer>
         )
     }
 }
 
-registerComponent('Account', Account, withCurrentUser);
-export default withCurrentUser(Account)
+registerComponent('AccountBuyer', AccountBuyer, withCurrentUser);
+export default withCurrentUser(AccountBuyer)

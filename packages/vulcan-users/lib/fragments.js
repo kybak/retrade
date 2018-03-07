@@ -21,5 +21,7 @@ registerFragment(`
     billingAddress
     deliveryAddress
     country
+    isSeller
+    isBuyer
   }
 `);

@@ -3,7 +3,6 @@ Package.describe({
 });
 
 Package.onUse(function (api) {
-
   api.use([
 
     // vulcan core
@@ -17,12 +16,17 @@ Package.onUse(function (api) {
   ]);
 
   api.addAssets([
-    'lib/static/LuloCleanOneBold.otf',
-    'lib/static/avenir-light.otf',
-    'lib/static/Electronics.png',
-    'lib/static/login.svg',
-    'lib/static/link.svg',
+    './lib/static/LuloCleanOneBold.otf',
+    './lib/static/avenir-light.otf',
+    './lib/static/Electronics.png',
+    './lib/static/login.svg',
+    './lib/static/link.svg',
   ], ['client']);
+
+  api.addAssets([
+    'lib/server/email/templates/order-paid.handlebars',
+    'lib/server/email/templates/wrapper.handlebars',
+  ], ['server']);
 
 
   // api.addFiles('lib/stylesheets/bootstrap.min.css');

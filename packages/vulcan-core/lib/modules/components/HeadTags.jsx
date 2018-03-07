@@ -62,6 +62,8 @@ class HeadTags extends PureComponent {
           <link name='favicon' rel='shortcut icon' href={getSetting('faviconUrl', '/img/favicon.ico')}/>
           <link name='font-awesome' rel='stylesheet' type='text/css' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'/>
 
+          <script id="stripe-js" src="https://js.stripe.com/v3/" async></script>
+
           {Head.meta.map((tag, index) => <meta key={index} {...tag}/>)}
           {Head.link.map((tag, index) => <link key={index} {...tag}/>)}
           {Head.script.map((tag, index) => <script key={index} {...tag}>{contents}</script>)}

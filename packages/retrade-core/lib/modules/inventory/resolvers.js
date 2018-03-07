@@ -16,8 +16,8 @@ const resolvers = {
     name: 'inventoryList',
 
     resolver(root, {terms = {}}, context, info) {
+
       let {selector, options} = context.Inventory.getParameters(terms, {}, context.currentUser);
-      const results = context.Inventory.find(selector, options).fetch();
       return context.Inventory.find(selector, options).fetch();
     },
 

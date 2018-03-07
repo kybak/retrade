@@ -55,7 +55,7 @@ class TopBar extends React.Component {
     logout = () => {
         this.closeMenu();
         Meteor.logout();
-        window.location = '/'
+        window.location = 'https://rt-electronics.com'
     };
 
 
@@ -76,9 +76,6 @@ class TopBar extends React.Component {
                 </NavItem>
                 <NavItem>
                     <Link to={`/search`}>Search</Link>
-                </NavItem>
-                <NavItem>
-                    <a href="">Add</a>
                 </NavItem>
                 <NavItem>
                     <a href="">Help</a>
@@ -105,14 +102,13 @@ class TopBar extends React.Component {
                             </div>
 
                             <Menu
-                                autoWidth="true"
                                 id="simple-menu"
                                 anchorEl={this.state.anchorEl}
                                 open={this.state.open}
                                 onRequestClose={this.closeMenu}
                             >
                                 <MenuItemHeader><b>{currentUser.username}</b></MenuItemHeader>
-                                <MenuItem onClick={this.closeMenu}>Orders</MenuItem>
+                                <Link to={`/orders`}><MenuItem onClick={this.closeMenu}>Orders</MenuItem></Link>
                                 <Link to={`/account`}><MenuItem onClick={this.closeMenu}>My account</MenuItem></Link>
                                 <MenuItem onClick={this.logout}>Logout</MenuItem>
                             </Menu>

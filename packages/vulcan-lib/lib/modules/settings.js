@@ -16,7 +16,7 @@ export const getAllSettings = () => {
   rootSettings = flatten(rootSettings, {safe: true});
   const privateSettings = flatten(Meteor.settings.private || {}, {safe: true});
 
-  // public settings
+  // private settings
   const publicSettings = flatten(Meteor.settings.public || {}, {safe: true});
 
   // registered default values
@@ -35,7 +35,7 @@ export const getAllSettings = () => {
     } else if (typeof publicSettings[key] !== 'undefined') {
       settingsObject[key].value = publicSettings[key];
     }
-    
+
     if (typeof publicSettings[key] !== 'undefined'){
       settingsObject[key].public = true;
     }
@@ -67,11 +67,11 @@ export const getSetting = (settingName, settingDefault) => {
   const defaultValue = settingDefault || Settings[settingName] && Settings[settingName].defaultValue;
 
   if (Meteor.isServer) {
-    // look in public, private, and root
+    // look in private, private, and root
     const rootSetting = Utils.getNestedProperty(Meteor.settings, settingName);
     const privateSetting = Meteor.settings.private && Utils.getNestedProperty(Meteor.settings.private, settingName);
     const publicSetting = Meteor.settings.public && Utils.getNestedProperty(Meteor.settings.public, settingName);
-    
+
     // if setting is an object, "collect" properties from all three places
     if (typeof rootSetting === 'object' || typeof privateSetting === 'object' || typeof publicSetting === 'object') {
       setting = {
@@ -93,7 +93,7 @@ export const getSetting = (settingName, settingDefault) => {
     }
 
   } else {
-    // look only in public
+    // look only in private
     const publicSetting = Meteor.settings.public && Utils.getNestedProperty(Meteor.settings.public, settingName);
     setting = publicSetting || defaultValue;
   }

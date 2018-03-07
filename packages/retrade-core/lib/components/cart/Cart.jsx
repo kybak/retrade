@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components'
-import {withList, registerComponent} from "meteor/vulcan:core";
+import {withNew, withList, withCurrentUser, registerComponent} from "meteor/vulcan:core";
+import {withRouter} from 'react-router';
+import Orders from '../../modules/orders/collection.js'
 import AlertContainer from 'react-alert'
 import Header from '../common/layouts/header/Header.jsx'
 import AddressModal from './modals/Address.jsx'
@@ -109,6 +111,33 @@ class Cart extends React.Component {
         )
     }
 
+    closeModal(ready) {
+        if (ready) {
+            //send email to buyer, sender, and admin
+            //add order to orders collection
+            this.props.ui.cart.forEach((item, ind)=> {
+                const document = {
+                    buyer: this.props.currentUser._id,
+                    seller: item.owner,
+                    item: item,
+                    deliveryAddress: this.props.currentUser.deliveryAddress
+                };
+
+                this.props.newMutation({
+                    document: document
+                }).then(res => {
+                    //if all are added redirect to confirmation page
+                    if (ind + 1 === this.props.ui.cart.length) this.props.router.push('/order-received');
+                }).catch(err => console.log(err));
+            });
+
+
+
+        }
+
+        this.setState({modalOpen: false});
+    }
+
     render() {
         const {cart} = this.props.ui;
 
@@ -154,14 +183,21 @@ class Cart extends React.Component {
 
 
                 {this.state.modalOpen &&
-                <AddressModal/>
+                <AddressModal user={this.props.currentUser} close={(finalized) => this.closeModal(finalized)}/>
                 }
             </div>
         )
     }
 }
 
-registerComponent('Cart', withCart(Cart));
+const mutationOptions = {
+    collection: Orders,
+    fragmentName: "OrderFragment"
+};
+
+const LoadedCart = withCart(Cart);
+
+registerComponent('Cart', withCurrentUser(LoadedCart), withRouter, [withNew, mutationOptions]);
 
 
 /*

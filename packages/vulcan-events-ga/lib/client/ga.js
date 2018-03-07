@@ -4,9 +4,9 @@ import { addPageFunction, addInitFunction } from 'meteor/vulcan:events';
 /*
 
   We provide a special support for Google Analytics.
-  
+
   If you want to enable GA page viewing / tracking, go to
-  your settings file and update the 'public > googleAnalytics > apiKey' 
+  your settings file and update the 'private > googleAnalytics > apiKey'
   field with your GA unique identifier (UA-xxx...).
 
 */

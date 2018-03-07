@@ -137,7 +137,8 @@ registerComponent("PartList", PartList, [withNew, mutationOptions], [withList, l
 
 
 `
-    Cycling between two functions so that mutations are called in turn.
+    Cycling between two functions so that mutations are called in turn. 
+    Should probably change this to await/async in a for loop for cleaner implementation.
 `;
 
 function addComponentA(props, results) {

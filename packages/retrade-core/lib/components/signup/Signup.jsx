@@ -1,15 +1,13 @@
 import React from 'react';
+import {withCurrentUser, registerComponent} from 'meteor/vulcan:core'
 import styled from 'styled-components'
-import {boxShadow, borderRadius, transition} from '../../stylesheets/style.utils.js';
+import {boxShadow, borderRadius, transition} from '../../stylesheets/style.utils.js'
 import Header from '../common/layouts/header/Header.jsx'
 import Footer from '../common/layouts/footer/Footer.js'
 import {ButtonPrimary} from '../common/presentational-components/buttons/ButtonPrimary.js'
 import withCreateUser from '../../containers/withCreateUser.js'
 import AlertContainer from 'react-alert'
 import {TextInput} from '../common/presentational-components/inputs/TextInput.js'
-
-
-
 
 
 const Banner = styled.div`
@@ -106,7 +104,7 @@ const IconContainer = styled.div`
       transform: translateY(-50%);
       background: #ebf7ff;
       width: 42px;
-      height: 46px;
+      height: 42px;
       ${borderRadius("5px")}
       border-bottom-right-radius: 0;
       border-top-right-radius: 0;
@@ -151,31 +149,32 @@ class Signup extends React.Component {
     async handleSubmit(ev) {
         ev.preventDefault();
 
-        Accounts.createUser(this.state, (err)=> {
+        Accounts.createUser(this.state, (err) => {
             if (err) {
-                this.msg.error('Registration unsuccessful. ' + error, {
+                console.log(err);
+                /*this.msg.error('Registration unsuccessful. ' + error, {
                     time: 30000,
                     type: 'error',
-                });
+                });*/
             } else {
-                this.msg.success('Registration successful!', {
+                /*this.msg.success('Registration successful!', {
                     time: 30000,
                     type: 'success',
-                });
+                });*/
 
-                Meteor.loginWithPassword(this.state.email, this.state.password, (err)=> {
+                Meteor.loginWithPassword(this.state.email, this.state.password, (err) => {
                     if (!err) {
-                        this.msg.success('Login successful. ID is: ' + Meteor.userId(), {
+                        /*this.msg.success('Login successful. ID is: ' + Meteor.userId(), {
                             time: 30000,
                             type: 'success',
-                        });
+                        });*/
 
-                        window.location='/account'
+                        window.location = '/account'
                     } else {
-                        this.msg.error(err.message, {
+                        /*this.msg.error(err.message, {
                             time: 30000,
                             type: 'error',
-                        });
+                        });*/
                     }
                 });
             }
@@ -188,7 +187,7 @@ class Signup extends React.Component {
 
         return (
             <div className="flex-column">
-                <AlertContainer ref={a => this.msg = a} />
+                {/*<AlertContainer ref={a => this.msg = a} />*/}
 
                 <Header/>
                 <Filter/>
@@ -207,26 +206,29 @@ class Signup extends React.Component {
                                 <IconContainer className="flex-row">
                                     <i className="fa fa-user" aria-hidden="true"></i>
                                 </IconContainer>
-                                <TextInput auth placeholder="Company Name" required="true" onChange={ev=>this.setState({username: ev.target.value})}/>
+                                <TextInput auth placeholder="Company Name" required="true"
+                                           onChange={ev => this.setState({username: ev.target.value})}/>
                             </div>
 
                             <div className="relative flex-row align-center justify-center">
                                 <IconContainer className="flex-row">
                                     <i className="fa fa-envelope" aria-hidden="true"></i>
                                 </IconContainer>
-                                <TextInput auth type="email" placeholder="Email" required="true" onChange={ev=>this.setState({email: ev.target.value})}/>
+                                <TextInput auth type="email" placeholder="Email" required="true"
+                                           onChange={ev => this.setState({email: ev.target.value})}/>
                             </div>
 
                             <div className="relative flex-row align-center justify-center">
                                 <IconContainer className="flex-row">
                                     <i className="fa fa-lock" aria-hidden="true"></i>
                                 </IconContainer>
-                                <TextInput auth type="password" placeholder="Password" required="true" onChange={ev=>this.setState({password: ev.target.value})} />
+                                <TextInput auth type="password" placeholder="Password" required="true"
+                                           onChange={ev => this.setState({password: ev.target.value})}/>
                             </div>
 
                             <div style={{width: "325px"}} className="flex-row justify-end">
-                                <AlreadyRegisteredLink onClick={()=> window.location = '/login'}>Already registered?</AlreadyRegisteredLink>
-
+                                <AlreadyRegisteredLink onClick={() => window.location = '/login'}>Already
+                                    registered?</AlreadyRegisteredLink>
                             </div>
                         </div>
 
@@ -242,6 +244,7 @@ class Signup extends React.Component {
     }
 }
 
+// registerComponent('Signup', Signup, withCurrentUser);
 export default Signup
 
 /*

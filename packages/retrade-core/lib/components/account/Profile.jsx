@@ -37,7 +37,7 @@ class Profile extends React.Component {
 
 
         this.state = {
-            checked: (props.profile && (user.profile.deliveryAddress === user.profile.billingAddress)),
+            checked: user.deliveryAddress === user.billingAddress,
             notEditing: true,
             sameAsBilling: false,
             passwordReset: false,
@@ -61,7 +61,7 @@ class Profile extends React.Component {
     changeBilling = (e, checked) => {
         let user = {...this.state.user};
         this.setState({checked: !this.state.checked});
-        checked ? user.profile.deliveryAddress = user.profile.billingAddress : user.profile.deliveryAddress = "";
+        checked ? user.deliveryAddress = user.billingAddress : user.deliveryAddress = "";
         this.setState({user});
     };
 
@@ -250,6 +250,6 @@ const mutationOptions = {
 };
 
 
-registerComponent('Profile', Profile, withRouter, withCurrentUser, [withEdit, mutationOptions]);
+registerComponent('Profile', Profile, withRouter, [withEdit, mutationOptions]);
 
 // export default withEdit(mutationOptions)(withCurrentUser(Profile))

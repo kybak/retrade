@@ -27,7 +27,7 @@ Meteor.startup(function () {
 
     const users = Users.find().fetch();
     // users.forEach(user=>Meteor.users.remove({_id: user._id}));
-console.log(users);
+// console.log(users);
   if (Users.find().fetch().length === 0) {
     Accounts.createUser({
       username: 'Admin',
@@ -39,6 +39,8 @@ console.log(users);
 
     Meteor.users.update(currentUser._id, {$set: {isAdmin: true}})
   }
+
+  // Meteor.users.remove({"emails.0.address": "tokylebaker@gmail.com"});
   /*if (Movies.find().fetch().length === 0) {
     seedData.forEach(document => {
       newMutation({

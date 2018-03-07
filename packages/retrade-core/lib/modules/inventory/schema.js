@@ -5,7 +5,6 @@ A SimpleSchema-compatible JSON schema
 
 */
 
-// This is fake data. This will change!
 
 const schema = {
 

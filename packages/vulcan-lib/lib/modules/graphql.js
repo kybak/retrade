@@ -17,6 +17,7 @@ disableFragmentWarnings();
 const getGraphQLType = (schema, fieldName) => {
 
   const field = schema[fieldName];
+
   const type = field.type.singleType;
   const typeName = typeof type === 'function' ? type.name : type;
 
