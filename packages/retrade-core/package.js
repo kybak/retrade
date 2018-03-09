@@ -21,6 +21,7 @@ Package.onUse(function (api) {
     './lib/static/Electronics.png',
     './lib/static/login.svg',
     './lib/static/link.svg',
+    './lib/static/lightbulb_white.png',
   ], ['client']);
 
   api.addAssets([

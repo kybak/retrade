@@ -41,6 +41,7 @@ Meteor.startup(function () {
   }
 
   // Meteor.users.remove({"emails.0.address": "tokylebaker@gmail.com"});
+  // Meteor.users.remove({"emails.0.address": "k@nordicode.com"});
   /*if (Movies.find().fetch().length === 0) {
     seedData.forEach(document => {
       newMutation({

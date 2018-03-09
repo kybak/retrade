@@ -16,19 +16,19 @@ if (Meteor.isServer) {
   
   input Item {
     _id: String!,
+    itemName: String!,
     amt: String
-    owner: String!
-    seller: String!
   }
 
 
   input PaymentInput {
     token: String!
-    user: String!,
-    totalAmt: Int,
+    buyer: String!
+    seller: String!
+    totalAmt: Int!,
     totalQty: Int,
     currency: String,
-    selected: Item
+    items: [Item]
   }
 `;
 
@@ -38,34 +38,40 @@ if (Meteor.isServer) {
   const paymentResolver = {
     Mutation: {
       pay(root, args) {
-        const {token, selected, currency, user, totalQty, totalAmt, seller} = args.input;
+        const {token, items, currency, buyer, seller, totalQty, totalAmt} = args.input;
 
-        // Check if user owns document
+        console.log("ARGS: ", args.input);
+        // TODO: Check if user owns document
+
 
         return new Promise((resolve, reject) => {
+
           stripe.charges.create({
-            amount: selected.amt ? selected.amt : '100',
+            amount: totalAmt,
             currency: "usd",
-            description: "Example charge",
             source: token,
           }, Meteor.bindEnvironment((err, res) => {
+            console.log("CHARGE ERROR: ", err);
+            console.log("CHARGE SUCCESS: ", res);
             // edit paid value on orders
-            Orders.update({_id: selected._id}, {$set: {paid: true}}, (e, r) => {
-              if (r) {
-                items.push({...Orders.findOne({_id: selected._id}), amt: selected.amt});
-                console.log('selected: ', items.length);
-                // generate and send invoice
-                if (items.length === totalQty) runCallbacks(`orders.edit.async`, {paid: true}, user, generateInvoice({
-                  order: items,
-                  total: totalAmt,
-                  user: Users.findOne({_id: user})
-                }));
+            for (item of items) {
+              Orders.update({_id: item._id}, {$set: {paid: true}}, (e, r) => {
 
-                // TODO create transfer of money to seller's Stripe account
-                if (res) resolve(res);
-                if (err) reject(err)
-              }
-            });
+              });
+
+              // generate and send invoice
+              if (items.length === totalQty) runCallbacks(`orders.edit.async`, {paid: true}, buyer, generateInvoice({
+                order: items,
+                total: totalAmt,
+                user: Users.findOne({_id: buyer})
+              }));
+
+              resolve(res);
+
+              // TODO create transfer of money to seller's Stripe account
+
+            }
+
           }));
         });
 

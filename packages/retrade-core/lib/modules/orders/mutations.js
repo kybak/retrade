@@ -49,7 +49,8 @@ const mutations = {
 
     check(user, document) {
       if (!user || !document) return false;
-      return Users.owns(user, document) ? Users.canDo(user, 'main.edit.own') : Users.canDo(user, `inventory.edit.all`);
+      console.log("Can do:", Users.canDo(user, 'main.edit.all'));
+      return Users.owns(user, document) ? Users.canDo(user, 'main.edit.all') : Users.canDo(user, `main.edit.all`);
     },
 
     mutation(root, {documentId, set, unset}, context) {

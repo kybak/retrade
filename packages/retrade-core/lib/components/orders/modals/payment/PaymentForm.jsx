@@ -4,11 +4,16 @@ import {registerComponent} from 'meteor/vulcan:core';
 import {injectStripe} from 'react-stripe-elements';
 import withPayment from '../../../../containers/withPayment'
 import CardSection from './CardSection';
+import {ButtonPrimary} from "../../../common/presentational-components/buttons/ButtonPrimary";
 
 class PaymentForm extends React.Component {
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
+
+        this.state = {
+            disabled: false
+        }
     }
 
     handleSubmit = (ev) => {
@@ -17,10 +22,14 @@ class PaymentForm extends React.Component {
         // Within the context of `Elements`, this call to createToken knows which Element to
         // tokenize, since there's only one in this group.
 
+        this.setState({disabled: true});
+
         createTokenandCharge(this.props, selected, user).then(paid => {
             if (paid.findIndex(p => p !== "true") !== -1) {
                 this.props.closeModal(true);
             } else {
+                console.log('PAID:', paid);
+                this.setState({disabled: false});
                 this.props.closeModal(false);
             }
         });
@@ -30,8 +39,8 @@ class PaymentForm extends React.Component {
         return (
             <form onSubmit={this.handleSubmit} style={{width: "100%"}}>
                 {/*<AddressSection />*/}
-                <CardSection/>
-                <button type="submit">Confirm order</button>
+                <CardSection/> <br/>
+                <ButtonPrimary type="submit" disabled={this.state.disabled} style={{width: "100%"}}>Confirm order</ButtonPrimary>
             </form>
         );
     }
@@ -45,18 +54,18 @@ export default withPayment(injectStripe(PaymentForm));
 //              Payment Functions               //
 //////////////////////////////////////////////////
 
-function createToken(context, item, user) {
-
+function createToken(context, user) {
     return context.stripe.createToken({name: user}).then(({token}) => token)
 }
 
-function createCharge(context, token, item, user, seller, qty, amt) {
+function createCharge(context, token, items, buyer, seller, qty, amt) {
     return context.pay({
         variables: {
             input: {
                 token: token,
-                user: user,
-                selected: item,
+                buyer: buyer,
+                seller: seller,
+                items: items,
                 totalQty: qty,
                 totalAmt: amt,
             }
@@ -65,18 +74,41 @@ function createCharge(context, token, item, user, seller, qty, amt) {
 }
 
 async function createTokenandCharge(context, selected, user) {
-    let token, paid = [], amt = 0;
+    let token, paid = [], invoices = [];
     for (item of selected) {
-        //for staging
+
+        //for staging TODO: remove this
         if (!item.amt) item.amt = 100;
+        if (!item.qty) item.qty = 1;
         /////////////
 
-        amt += parseInt(item.amt);
-        token = await createToken(context, item, user._id);
-        console.log("item: ", item);
-        const result = await createCharge(context, token.id, item, user._id, item.seller, selected.length, amt);
+        const notPaid = item.paid.indexOf('NOT') > -1;
+        const notConfirmed = item.confirmed.indexOf('AWAITING') > -1;
+
+        if (notPaid && !notConfirmed) { //TODO: add error message for unconfirmed charges
+
+            const itemMapped = {_id: item._id, itemName: item.itemName, amt: item.amt};
+            if (!invoices.find(i => i.seller === item.seller)) {
+                invoices.push({
+                    buyer: user._id,
+                    seller: item.seller,
+                    total: parseInt(item.amt) * parseInt(item.qty),
+                    items: [itemMapped]
+                });
+            } else {
+                const ind = invoices.findIndex(i => i.seller === item.seller);
+                invoices[ind].total += (parseInt(item.amt) * parseInt(item.qty));
+                invoices[ind].items.push(itemMapped);
+            }
+        }
+    }
+
+    for (inv of invoices) {
+        token = await createToken(context, user._id);
+        const result = await createCharge(context, token.id, inv.items, user._id, inv.seller, inv.items.length, inv.total);
         paid.push(result.data.pay.paid);
     }
+
 
     return paid;
 }

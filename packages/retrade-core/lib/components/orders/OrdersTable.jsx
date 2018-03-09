@@ -385,12 +385,16 @@ class EnhancedTable extends React.Component {
                                         return (
                                             <TableRow
                                                 hover
-                                                onClick={event => this.handleClick(event, {_id: n._id, amt: n.amt, owner: n.item.owner, seller: n.seller})}
+                                                onClick={event => this.handleClick(event, {_id: n._id, amt: n.amt, owner: n.item.owner, seller: n.seller, paid: n.paid, confirmed: n.confirmed, itemName: n.item.itemName, qty: n.qty})}
                                                 onKeyDown={event => this.handleKeyDown(event, {
                                                     _id: n._id,
                                                     amt: n.amt,
                                                     owner: n.item.owner,
-                                                    seller: n.seller
+                                                    seller: n.seller,
+                                                    paid: n.paid,
+                                                    confirmed: n.confirmed,
+                                                    itemName: n.item.itemName,
+                                                    qty: n.qty
                                                 })}
                                                 role="checkbox"
                                                 aria-checked={isSelected}

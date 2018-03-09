@@ -65,7 +65,7 @@ class TopBar extends React.Component {
             <Bar className="flex-row justify-end align-center full-width">
 
                 <Logo className="flex-row">
-                    <img src="/lightbulb_white.png" height="35"/>
+                    <img src="/packages/retrade_core/lib/static/lightbulb_white.png" height="35"/>
                     <b style={{fontFamily: 'Lulo Clean'}}><span style={{color: "#BADA55"}}>RE</span>TRADE</b>
                 </Logo>
                 <NavItem>

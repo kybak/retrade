@@ -1,6 +1,7 @@
 # see http://docs.vulcanjs.org/packages
 
 vulcan:core
+vulcan:email
 
 ############ Language Packages ############
 
