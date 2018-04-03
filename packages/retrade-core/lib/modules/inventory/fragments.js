@@ -19,5 +19,6 @@ registerFragment(`
     mfm
     info
     multiple
+    price
   }
 `);

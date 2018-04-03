@@ -101,6 +101,14 @@ const schema = {
     editableBy: ['admin'],
     searchable: true
   },
+  price: {
+    type: String,
+    optional: true,
+    viewableBy: ['members'],
+    insertableBy: ['members'],
+    editableBy: ['members'],
+    searchable: true
+  },
 
 
 };
