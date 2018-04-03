@@ -5,6 +5,8 @@ import {injectStripe} from 'react-stripe-elements';
 import withPayment from '../../../../containers/withPayment'
 import CardSection from './CardSection';
 import {ButtonPrimary} from "../../../common/presentational-components/buttons/ButtonPrimary";
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+
 
 class PaymentForm extends React.Component {
     constructor(props) {
@@ -19,8 +21,6 @@ class PaymentForm extends React.Component {
     handleSubmit = (ev) => {
         ev.preventDefault();
         const {selected, user} = this.props;
-        // Within the context of `Elements`, this call to createToken knows which Element to
-        // tokenize, since there's only one in this group.
 
         this.setState({disabled: true});
 
@@ -39,8 +39,10 @@ class PaymentForm extends React.Component {
         return (
             <form onSubmit={this.handleSubmit} style={{width: "100%"}}>
                 {/*<AddressSection />*/}
-                <CardSection/> <br/>
+                <CardSection/> <br/><br/><br/>
                 <ButtonPrimary type="submit" disabled={this.state.disabled} style={{width: "100%"}}>Confirm order</ButtonPrimary>
+
+
             </form>
         );
     }
@@ -59,6 +61,10 @@ function createToken(context, user) {
 }
 
 function createCharge(context, token, items, buyer, seller, qty, amt) {
+    `calls "pay" mutation located at moduls/stripe/resolvers
+     this creates a stripe charge, edits paid value on order document, and generates the invoice   
+    `;
+
     return context.pay({
         variables: {
             input: {
@@ -85,7 +91,7 @@ async function createTokenandCharge(context, selected, user) {
         const notPaid = item.paid.indexOf('NOT') > -1;
         const notConfirmed = item.confirmed.indexOf('AWAITING') > -1;
 
-        if (notPaid && !notConfirmed) { //TODO: add error message for unconfirmed charges
+        if (notPaid && !notConfirmed) { //TODO: add error message for unconfirmed charges, "There were some chargest that did not go through. This is because the seller has not confirmed the order."
 
             const itemMapped = {_id: item._id, itemName: item.itemName, amt: item.amt};
             if (!invoices.find(i => i.seller === item.seller)) {

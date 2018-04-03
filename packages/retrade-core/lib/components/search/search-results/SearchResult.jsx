@@ -11,6 +11,7 @@ import ExpansionPanel, {
 } from 'material-ui/ExpansionPanel';
 import Typography from 'material-ui/Typography';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 import withCart from '../../../containers/withCart';
 
 const FlipContainer = styled.div`
@@ -144,7 +145,8 @@ class SearchResult extends React.Component {
     add(e) {
         if (this.state.qty) {
             let component = {...this.props.component, qty: this.state.qty};
-            this.props.updateCart(component);
+            this.props.updateCart(component); //passed in through "withCart" container (containers/withCart)
+            NotificationManager.success("There is a new item in your cart", "Item Added", 5000);
         } else {
             alert('Please add a quantity')
         }
@@ -182,6 +184,8 @@ class SearchResult extends React.Component {
 
 
                 </ExpansionPanelDetails>
+                <NotificationContainer/>
+
             </ExpansionPanel>
         )
     }

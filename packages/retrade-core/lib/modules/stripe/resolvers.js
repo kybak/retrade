@@ -55,11 +55,14 @@ if (Meteor.isServer) {
             console.log("CHARGE SUCCESS: ", res);
             // edit paid value on orders
             for (item of items) {
-              Orders.update({_id: item._id}, {$set: {paid: true}}, (e, r) => {
+              Orders.update({_id: item._id}, {$set: {paid: true, totalPaid: (parseFloat(totalAmt / 100).toFixed(2)).toString()}}, (e, r) => {
 
               });
 
-              // generate and send invoice
+              `generate and send invoice
+              callback located at server/orders/callbacks
+              `;
+
               if (items.length === totalQty) runCallbacks(`orders.edit.async`, {paid: true}, buyer, generateInvoice({
                 order: items,
                 total: totalAmt,

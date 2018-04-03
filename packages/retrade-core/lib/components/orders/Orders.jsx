@@ -31,6 +31,7 @@ class Orders extends React.Component {
 
                 <Components.OrdersTable
                     terms={{query: this.state.query, limit: 3000}}
+                    user={this.props.currentUser}
                 />
 
             </ComponentContainer>

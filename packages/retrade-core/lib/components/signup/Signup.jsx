@@ -104,7 +104,7 @@ const IconContainer = styled.div`
       transform: translateY(-50%);
       background: #ebf7ff;
       width: 42px;
-      height: 42px;
+      height: 40px;
       ${borderRadius("5px")}
       border-bottom-right-radius: 0;
       border-top-right-radius: 0;
@@ -152,29 +152,11 @@ class Signup extends React.Component {
         Accounts.createUser(this.state, (err) => {
             if (err) {
                 console.log(err);
-                /*this.msg.error('Registration unsuccessful. ' + error, {
-                    time: 30000,
-                    type: 'error',
-                });*/
             } else {
-                /*this.msg.success('Registration successful!', {
-                    time: 30000,
-                    type: 'success',
-                });*/
-
                 Meteor.loginWithPassword(this.state.email, this.state.password, (err) => {
                     if (!err) {
-                        /*this.msg.success('Login successful. ID is: ' + Meteor.userId(), {
-                            time: 30000,
-                            type: 'success',
-                        });*/
-
                         window.location = '/account'
                     } else {
-                        /*this.msg.error(err.message, {
-                            time: 30000,
-                            type: 'error',
-                        });*/
                     }
                 });
             }

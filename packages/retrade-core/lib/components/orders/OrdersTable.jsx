@@ -25,6 +25,7 @@ import DeleteIcon from 'material-ui-icons/Delete';
 import CheckIcon from 'material-ui-icons/Check';
 import PaymentIcon from 'material-ui-icons/Payment';
 import FilterListIcon from 'material-ui-icons/FilterList';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 import Header from '../common/layouts/header/Header.jsx'
 import BannerSmall from '../common/layouts/header/BannerSmall.jsx'
 import ComponentContainer from '../common/layouts/body/ComponentContainer.jsx'
@@ -198,17 +199,22 @@ let EnhancedTableToolbar = props => {
 
                 {selected.length > 0 ? (
                     <div className="flex-row">
+                        {props.user.isSeller &&
                         <Tooltip title="Confirm">
                             <IconButton onClick={() => confirmOrder(selected)} aria-label="Confirm">
                                 <CheckIcon/>
                             </IconButton>
                         </Tooltip>
+                        }
 
+                        {props.user.isBuyer &&
                         <Tooltip title="Pay">
                             <IconButton onClick={() => pay(selected)} aria-label="Pay">
                                 <PaymentIcon/>
                             </IconButton>
                         </Tooltip>
+                        }
+
                     </div>
                 ) : (
                     <Tooltip title="Filter list">
@@ -339,8 +345,9 @@ class EnhancedTable extends React.Component {
         return this.state.selected.findIndex(i => _id === i._id) !== -1;
     };
 
-    postPayment = success => {
-        this.setState({showModal: false, paymentSuccess: success, selected: []});
+    postPayment = response => {
+        if (!response) NotificationManager.error("We were not able to complete payment of your order(s). This could be because the seller has not confirmed the order yet.", "Error with Payment", 10000);
+        this.setState({showModal: false, paymentSuccess: response, selected: []});
         this.props.refetch();
     };
 
@@ -368,7 +375,9 @@ class EnhancedTable extends React.Component {
 
                     <Paper style={{width: "95%", margin: "0 20px 40px 20px"}}>
                         <Components.EnhancedTableToolbar selected={selected} refetch={this.props.refetch}
-                                                         showModal={() => this.setState({showModal: true})}/>
+                                                         showModal={() => this.setState({showModal: true})}
+                                                         user={this.props.user}
+                        />
                         <div className={classes.tableWrapper}>
                             <Table className={classes.table}>
                                 <EnhancedTableHead
@@ -385,7 +394,16 @@ class EnhancedTable extends React.Component {
                                         return (
                                             <TableRow
                                                 hover
-                                                onClick={event => this.handleClick(event, {_id: n._id, amt: n.amt, owner: n.item.owner, seller: n.seller, paid: n.paid, confirmed: n.confirmed, itemName: n.item.itemName, qty: n.qty})}
+                                                onClick={event => this.handleClick(event, {
+                                                    _id: n._id,
+                                                    amt: n.amt,
+                                                    owner: n.item.owner,
+                                                    seller: n.seller,
+                                                    paid: n.paid,
+                                                    confirmed: n.confirmed,
+                                                    itemName: n.item.itemName,
+                                                    qty: n.qty
+                                                })}
                                                 onKeyDown={event => this.handleKeyDown(event, {
                                                     _id: n._id,
                                                     amt: n.amt,
@@ -441,7 +459,11 @@ class EnhancedTable extends React.Component {
                 </TableContainer>
 
                 {this.state.showModal &&
-                <PaymentModal hide={() => this.setState({showModal: false})} selected={this.state.selected} closeModal={success=>this.postPayment(success)}/>}
+                <PaymentModal hide={() => this.setState({showModal: false})} selected={this.state.selected}
+                              closeModal={success => this.postPayment(success)}/>}
+
+                <NotificationContainer/>
+
             </ComponentContainer>
         );
     }

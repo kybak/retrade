@@ -17,5 +17,7 @@ registerFragment(`
     paid
     invoiceSent
     deliveryAddress
+    invoiceDate
+    totalPaid
   }
 `);

@@ -4,7 +4,7 @@ import { getComponent } from 'meteor/vulcan:lib';
 import MainLayout from '../components/common/layouts/main-layout/MainLayout.jsx'
 import { registerComponent } from 'meteor/vulcan:core';
 import Cart from '../components/cart/Cart.jsx';
-import PartListFull from '../components/account/PartListFull.jsx';
+import PartListFull from '../components/parts/PartListFull.jsx';
 import Billing from '../components/account/modals/BillingF.jsx';
 import Admin from '../components/admin/Admin.jsx';
 import AccountSeller from '../components/account/AccountSeller.jsx';

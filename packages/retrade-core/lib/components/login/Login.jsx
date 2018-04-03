@@ -8,6 +8,7 @@ import Footer from '../common/layouts/footer/Footer.js'
 import {ButtonPrimary} from '../common/presentational-components/buttons/ButtonPrimary.js'
 import {TextInput} from '../common/presentational-components/inputs/TextInput.js'
 import AlertContainer from 'react-alert'
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 
 const Banner = styled.div`
@@ -115,7 +116,7 @@ const IconContainer = styled.div`
       transform: translateY(-50%);
       background: #ebf7ff;
       width: 42px;
-      height: 46px;
+      height: 40px;
       ${borderRadius("5px")}
       border-bottom-right-radius: 0;
       border-top-right-radius: 0;
@@ -189,17 +190,11 @@ class Login extends PureComponent {
 
         Meteor.loginWithPassword(this.state.email, this.state.password, (err)=> {
             if (!err) {
-                /*this.msg.success('Login successful. ID is: ' + Meteor.userId(), {
-                    time: 30000,
-                    type: 'success',
-                });*/
 
-                this.props.router.push('/account');
+                // TODO low priority: for some reason react router isn't working for this
+                window.location = '/account';
             } else {
-                /*this.msg.error(err.message, {
-                    time: 30000,
-                    type: 'error',
-                });*/
+                NotificationManager.error(err.reason, 'Login Failed', 5000);
             }
         });
     }
@@ -273,6 +268,8 @@ class Login extends PureComponent {
                 </ForgotPasswordContainer>
 
                 <Footer/>
+
+                <NotificationContainer/>
 
             </div>
         )

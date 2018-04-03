@@ -40,7 +40,8 @@ class AccountBuyer extends React.Component {
         if (!props.currentUser.isBuyer && !props.currentUser.isSeller) modalOpen = true;
 
         this.state = {
-            modalOpen: modalOpen
+            modalOpen: modalOpen,
+            query: props.currentUser._id
         }
     }
 
@@ -66,9 +67,9 @@ class AccountBuyer extends React.Component {
                             </div>
 
                             <div className="flex-column">
-                                {/*<Components.PartList user={this.props.currentUser} terms={{limit: 1}} />*/}
+                                <Components.OrderPreview user={this.props.currentUser} terms={{query: this.state.query, limit: 5}} />
 
-                                <Billing/>
+                                <Components.Billing terms={{query: this.state.query, limit: 5}}/>
                             </div>
                         </div>
                     </Scroll>

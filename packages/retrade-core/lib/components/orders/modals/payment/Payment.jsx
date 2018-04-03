@@ -44,7 +44,7 @@ const Modal = styled.div`
   animation-delay: .2s;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   opacity:0;
   background: white;
@@ -109,6 +109,8 @@ class PaymentModal extends React.Component {
         return (
             <ModalContainer>
                 <Modal>
+                    <h1>Payment Details</h1>
+
                     <StripeProvider stripe={this.state.stripe} >
                         <StripeElements user={this.props.currentUser} editUser={(data)=> this.props.editMutation(data)} selected={this.props.selected} closeModal={this.props.closeModal}/>
                     </StripeProvider>

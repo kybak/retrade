@@ -192,6 +192,7 @@ const styles = theme => ({
   },
 });
 
+let stop = 0;
 class EnhancedTable extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -203,6 +204,14 @@ class EnhancedTable extends React.Component {
       page: 0,
       rowsPerPage: 5,
     };
+  }
+
+  componentWillUpdate(nextProps) {
+    console.log(nextProps.results.length);
+      console.log(this.state.data);
+    if (stop < 4) this.setState({data: nextProps.results});
+    console.log(this.state.data);
+    stop ++; //TODO do something about this--feedback loop
   }
 
   handleRequestSort = (event, property) => {
@@ -271,7 +280,8 @@ class EnhancedTable extends React.Component {
   render() {
     const {classes} = this.props;
     const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    console.log("changed!", data);
+    const emptyRows = data ? rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage) : 0;
 
     return (
       <ComponentContainer>
@@ -299,10 +309,10 @@ class EnhancedTable extends React.Component {
                   orderBy={orderBy}
                   onSelectAllClick={this.handleSelectAllClick}
                   onRequestSort={this.handleRequestSort}
-                  rowCount={data.length}
+                  rowCount={data ? data.length : 0}
                 />
                 <TableBody>
-                  {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
+                  {data && data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
                     const isSelected = this.isSelected(n.id);
                     return (
                       <TableRow
@@ -339,7 +349,7 @@ class EnhancedTable extends React.Component {
                 <TableFooter>
                   <TableRow>
                     <TablePagination
-                      count={data.length}
+                      count={data ? data.length: 0}
                       rowsPerPage={rowsPerPage}
                       page={page}
                       onChangePage={this.handleChangePage}

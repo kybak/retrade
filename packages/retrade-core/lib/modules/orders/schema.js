@@ -34,6 +34,16 @@ const schema = {
       return new Date();
     }
   },
+  invoiceDate: {
+    type: Date,
+    optional: true,
+    viewableBy: ['members'],
+  },
+  totalPaid: {
+    type: String,
+    optional: true,
+    viewableBy: ['members'],
+  },
   buyer: {
     label: 'Buyer',
     type: String,
@@ -45,7 +55,8 @@ const schema = {
       fieldName: 'buyer',
       type: "String",
       resolver: (order, args, context) => {
-        return context.Users.findOne({ _id: order.buyer }).displayName;
+        const buyer = context.Users.findOne({ _id: order.buyer });
+        return buyer ? buyer.username : "NA";
       },
       addOriginalField: true
     }
@@ -62,7 +73,8 @@ const schema = {
       fieldName: 'seller',
       type: "String",
       resolver: (order, args, context) => {
-        return context.Users.findOne({ _id: order.seller }).displayName;
+        const seller = context.Users.findOne({ _id: order.seller });
+        return seller ? seller.username : "NA";
       },
       addOriginalField: true
     }

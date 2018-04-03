@@ -6,7 +6,7 @@ import {registerComponent, withCurrentUser} from 'meteor/vulcan:core';
 class CheckMembership extends React.Component {
   constructor(props) {
     super(props);
-
+console.log("Check Membership Props: ", props);
     if (!props.currentUser) {
       props.router.push('/login');
     } else if(props.currentUser.isSeller) {

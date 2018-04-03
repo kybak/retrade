@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components'
+import {withList, registerComponent} from 'meteor/vulcan:core'
+import Orders from '../../modules/orders/collection.js'
 import {borderRadius, boxShadow} from '../../stylesheets/style.utils.js';
 import BillingF from './modals/BillingF'
 import TextField from 'material-ui/TextField';
@@ -55,7 +57,16 @@ export default class Billing extends React.Component {
 
         this.state = {
             open: false,
+            data: []
         }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        nextProps = nextProps.results.filter(result=> {
+            console.log(result);
+            return result.invoiceSent === "INVOICE SENT"
+        });
+        this.setState({data: nextProps})
     }
 
     handleChange = name => event => {
@@ -76,6 +87,7 @@ export default class Billing extends React.Component {
 
 
     render() {
+        const {data} = this.state;
         return (
             <OrdersContainer className="flex-column">
 
@@ -96,19 +108,15 @@ export default class Billing extends React.Component {
                 </div>
 
                 <div className="flex-column justify-center flex-grow">
-                    <BillingItem className="flex-row full-width justify-space-between">
-                        <BillingItemDate>December 2017</BillingItemDate>
-                        <BillingItemPrice>500 kr</BillingItemPrice>
-                        <BillingItemView>View invoice</BillingItemView>
-                    </BillingItem>
-
-
-                    <BillingItem className="flex-row full-width justify-space-between">
-                        <BillingItemDate>November 2017</BillingItemDate>
-                        <BillingItemPrice>500 kr</BillingItemPrice>
-                        <BillingItemView>View invoice</BillingItemView>
-                    </BillingItem>
-
+                    {data.length > 0 && data.map(item=> {
+                        return (
+                            <BillingItem className="flex-row full-width justify-space-between">
+                                <BillingItemDate>{new Date(item.invoiceDate).toLocaleDateString()}</BillingItemDate>
+                                <BillingItemPrice>{item.totalPaid}</BillingItemPrice>
+                                <BillingItemView>View invoice</BillingItemView>
+                            </BillingItem>
+                        )
+                    })}
 
                 </div>
 
@@ -121,3 +129,12 @@ export default class Billing extends React.Component {
         )
     }
 }
+
+const listOptions = {
+    collection: Orders,
+    queryName: 'ordersPreview',
+    fragmentName: 'OrderFragment',
+};
+
+registerComponent("Billing", Billing, [withList, listOptions]);
+
