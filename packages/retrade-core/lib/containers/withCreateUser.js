@@ -1,5 +1,5 @@
-import React, { PropTypes, Component } from 'react';
-import { graphql } from 'react-apollo';
+import React, {PropTypes, Component} from 'react';
+import {graphql} from 'react-apollo';
 import gql from 'graphql-tag';
 
 
@@ -10,7 +10,10 @@ const withCreateUser = component => {
         _id
       }
     }
-`, { name: "createUser" })(component);
+`, {name: "createUser"})(component);
 };
 
 export default withCreateUser;
+
+
+
